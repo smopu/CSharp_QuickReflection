@@ -6,13 +6,16 @@
     ".NETFramework,Version=v4.5": {},
     ".NETFramework,Version=v4.5/win7-x86": {},
     ".NETFramework,Version=v4.7": {},
-    ".NETFramework,Version=v4.7/win7-x86": {}
+    ".NETFramework,Version=v4.7/win7-x86": {},
+    "net6.0": {},
+    "net6.0/win7-x86": {}
   },
   "libraries": {},
   "projectFileDependencyGroups": {
     ".NETCoreApp,Version=v3.1": [],
     ".NETFramework,Version=v4.5": [],
-    ".NETFramework,Version=v4.7": []
+    ".NETFramework,Version=v4.7": [],
+    "net6.0": []
   },
   "packageFolders": {
     "C:\\Users\\smopu!M\\.nuget\\packages\\": {},
@@ -38,6 +41,7 @@
       "originalTargetFrameworks": [
         "NET45",
         "NET47",
+        "net6.0",
         "netcoreapp3.1"
       ],
       "sources": {
@@ -47,6 +51,10 @@
       "frameworks": {
         "netcoreapp3.1": {
           "targetAlias": "netcoreapp3.1",
+          "projectReferences": {}
+        },
+        "net6.0": {
+          "targetAlias": "net6.0",
           "projectReferences": {}
         },
         "net45": {
@@ -67,6 +75,25 @@
     "frameworks": {
       "netcoreapp3.1": {
         "targetAlias": "netcoreapp3.1",
+        "imports": [
+          "net461",
+          "net462",
+          "net47",
+          "net471",
+          "net472",
+          "net48"
+        ],
+        "assetTargetFallback": true,
+        "warn": true,
+        "frameworkReferences": {
+          "Microsoft.NETCore.App": {
+            "privateAssets": "all"
+          }
+        },
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+      },
+      "net6.0": {
+        "targetAlias": "net6.0",
         "imports": [
           "net461",
           "net462",

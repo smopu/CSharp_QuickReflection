@@ -99,8 +99,8 @@ namespace ConsoleApp1
         }
         static unsafe void Main(string[] args)
         {
-            //TestScript testScript = new TestScript();
-            //testScript.RunTest2();
+            TestScript testScript = new TestScript();
+            testScript.RunTest();
 
             //工具类
             UnsafeTool tool = new UnsafeTool();

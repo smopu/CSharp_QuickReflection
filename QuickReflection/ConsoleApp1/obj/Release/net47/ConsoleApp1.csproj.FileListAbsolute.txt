@@ -1,0 +1,11 @@
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net47\ConsoleApp1.exe.config
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net47\ConsoleApp1.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net47\ConsoleApp1.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net47\DynamicCustomReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.csproj.AssemblyReference.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.csproj.SuggestedBindingRedirects.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.GeneratedMSBuildEditorConfig.editorconfig
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.csproj.CoreCompileInputs.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.csproj.CopyComplete
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net47\ConsoleApp1.pdb
