@@ -1,0 +1,14 @@
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.csproj.AssemblyReference.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.GeneratedMSBuildEditorConfig.editorconfig
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.csproj.CoreCompileInputs.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.deps.json
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\DynamicCustomReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.csproj.CopyComplete
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.runtimeconfig.json
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\ConsoleApp1.runtimeconfig.dev.json
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\ConsoleApp1.genruntimeconfig.cache

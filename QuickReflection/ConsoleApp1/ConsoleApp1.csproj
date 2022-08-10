@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netcoreapp3.1;NET45;NET47</TargetFrameworks>
+    <Configurations>Debug;Release;</Configurations>
+    <SignAssembly>true</SignAssembly>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <AllowUnsafeBlocks>True</AllowUnsafeBlocks>
+    <OutputType>Exe</OutputType>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <Reference Include="DynamicCustomReflection">
+      <HintPath>..\DynamicCustomReflection.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+
+</Project>
