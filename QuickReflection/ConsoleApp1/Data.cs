@@ -6,17 +6,20 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Reflection.Emit;
+using System.Runtime.CompilerServices;
 
+// public delegate*<object, void*> objectToVoidPtr;
 namespace ConsoleApp1
 {
+
     [StructLayout(LayoutKind.Explicit)]
     public unsafe class UnsafeTool
     {
         public delegate void* ObjectToVoidPtr(object obj);
         public delegate object VoidPtrToObject(void* obj);
+
         [FieldOffset(0)]
         public ObjectToVoidPtr objectToVoidPtr;
-
         [FieldOffset(0)]
         Func<object, object> func;
 
@@ -24,6 +27,8 @@ namespace ConsoleApp1
         public VoidPtrToObject voidPtrToObject;
         [FieldOffset(8)]
         Func<object, object> func2;
+
+
 
         public UnsafeTool()
         {
@@ -41,67 +46,16 @@ namespace ConsoleApp1
         [FieldOffset(67789)]
         long a2 = 0;
     }
-
-    public struct JLQ
+    unsafe class Program
     {
-        public long a;
-        public long x;
-    }
-    public struct JLQ2
-    {
-        public long a;
-        public long x;
-        public long y;
-        public long z;
-        public long z1;
-        public long z2;
-        public long z3;
-        public long z4;
-        public long z5;
-        public long z6;
-        public long z7;
-    }
 
-    public class DataF
-    {
-        public JLQ a { get; set; }
-    }
-
-    public class DataF2
-    {
-        public JLQ FV (Func<DataF, JLQ> func , DataF f)
-        {
-            return func(f);
-        }
-    }
-
-
-
-    [StructLayout(LayoutKind.Explicit)]
-    public unsafe class DDD
-    {
-        [FieldOffset(0)]
-        public Delegate delegate1;
-
-        [FieldOffset(0)]
-        public Func<JLQ2> delegate2;
-    }
-
-
-    class Program
-    {
-        public static JLQ Get()
-        {
-            JLQ jLQ = new JLQ();
-            jLQ.a = 111;
-            jLQ.x = 1344;
-            return jLQ;
-        }
         static unsafe void Main(string[] args)
         {
             TestScript testScript = new TestScript();
             testScript.RunTest();
+            return;
 
+            //GCHandle.Alloc(testScript, GCHandleType.Pinned);
             //工具类
             UnsafeTool tool = new UnsafeTool();
 
@@ -121,10 +75,6 @@ namespace ConsoleApp1
             Data data = new Data();
             data.a = 100;
 
-            DDD ddd = new DDD();
-            ddd.delegate1 = (Func<JLQ>)Get;
-            var v = ddd.delegate2();
-
             TypedReference d = __makeref(data);
             IntPtr p = *(IntPtr*)*(IntPtr*)(&d);
             Console.WriteLine("__makeref 取对象地址：" + p);
@@ -140,7 +90,6 @@ namespace ConsoleApp1
             Console.WriteLine("句柄 取对象的取对象地址：" + ((long)*handle));
             Console.WriteLine("句柄取到对象的地址应该是和两种方法取到的一样的\n");
             Console.WriteLine("句柄 取对象的值：" + ((Data)tool.voidPtrToObject(*handle)).a);
-
 
             {
                 //申请一大堆内存 用于GC，如果后面代码取到data的地址都一样，把10000加大
@@ -166,20 +115,25 @@ namespace ConsoleApp1
             Console.WriteLine("句柄取到对象的地址应该是和两种方法取到的一样的\n");
             Console.WriteLine("句柄 取对象的值：" + ((Data)tool.voidPtrToObject(*handle)).a);
 
-
             Console.WriteLine("\n句柄的值不随GC变动而变化\n");
 
-            Console.WriteLine("IL2CPP不能用关键字__makeref，可以用下面方法取【对象句柄】：");
-            objs[0] = data;
+            Console.WriteLine("不用关键字__makeref，可以用下面方法取【对象句柄】：");
+            ObjReference objReference = new ObjReference();
+            objReference.obj = data;
+
+            void** handleVoid2 = (void**)Unsafe.AsPointer(ref objReference);
+
             void** handle2 = (void**)tool.objectToVoidPtr(objs[0]);
             Console.WriteLine(" 句柄地址：" + ((long)handle));
-
-            Console.WriteLine("IL2CPP不能用关键字__makeref，可以用下面方法取【类型句柄】：");
-             d = __makeref(data);
-            Console.WriteLine(*((IntPtr*)(&d) + 1));
-            Console.WriteLine(data.GetType().TypeHandle.Value);
-
             Console.Read();
+        }
+        public unsafe struct ObjReference
+        {
+            public object obj;
+            public ObjReference(object obj)
+            {
+                this.obj = obj;
+            }
         }
     }
 }

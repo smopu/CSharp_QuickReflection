@@ -9,3 +9,4 @@ F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Rel
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\ConsoleApp1.csproj.CopyComplete
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\ConsoleApp1.exe
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\ConsoleApp1.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net45\System.Runtime.CompilerServices.Unsafe.dll

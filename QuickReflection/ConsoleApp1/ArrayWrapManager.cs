@@ -127,7 +127,7 @@ namespace PtrReflection
                     default:
                         //GC.Collect(); 
                         //return null;  
-                        ulong gcHandle;
+                        //ulong gcHandle;
                         object obj = new byte[this.elementTypeSize - 1 * UnsafeOperation.PTR_COUNT];
                         IntPtr* ptr = (IntPtr*)GeneralTool.ObjectToVoidPtr(obj);
                         if (typeHead == default(IntPtr))
@@ -135,7 +135,8 @@ namespace PtrReflection
                             typeHead = UnsafeOperation.GetTypeHead(elementType);
                         }
                         *ptr = typeHead;
-                        ptr += 2;
+                        ptr += 1;
+
                         GeneralTool.MemCpy(ptr, field, this.elementTypeSize);
                         //GC.Collect();
                         return obj;
@@ -204,7 +205,7 @@ namespace PtrReflection
                     case TypeCode.Object:
                         //ulong gcHandle;
                         IntPtr* ptr = (IntPtr*)GeneralTool.ObjectToVoidPtr(value);
-                        GeneralTool.MemCpy(field, ptr + 2, elementTypeSize);
+                        GeneralTool.MemCpy(field, ptr + 1, elementTypeSize);
                         break;
                 }
             }

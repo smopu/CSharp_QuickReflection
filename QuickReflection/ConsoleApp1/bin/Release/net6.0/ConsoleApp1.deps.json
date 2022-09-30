@@ -8,12 +8,14 @@
     ".NETCoreApp,Version=v6.0": {
       "ConsoleApp1/1.0.0": {
         "dependencies": {
+          "System.Runtime.CompilerServices.Unsafe": "4.5.0",
           "DynamicCustomReflection": "0.0.0.0"
         },
         "runtime": {
           "ConsoleApp1.dll": {}
         }
       },
+      "System.Runtime.CompilerServices.Unsafe/4.5.0": {},
       "DynamicCustomReflection/0.0.0.0": {
         "runtime": {
           "DynamicCustomReflection.dll": {
@@ -29,6 +31,13 @@
       "type": "project",
       "serviceable": false,
       "sha512": ""
+    },
+    "System.Runtime.CompilerServices.Unsafe/4.5.0": {
+      "type": "package",
+      "serviceable": true,
+      "sha512": "sha512-6zBxkHYemB0kQiHP3vGXGRXejZVoNVuMn2paUuqKKi5Wyjkxfkp+D0rd0c3VrGwotidRINt6KpOi2smL4VkJKw==",
+      "path": "system.runtime.compilerservices.unsafe/4.5.0",
+      "hashPath": "system.runtime.compilerservices.unsafe.4.5.0.nupkg.sha512"
     },
     "DynamicCustomReflection/0.0.0.0": {
       "type": "reference",

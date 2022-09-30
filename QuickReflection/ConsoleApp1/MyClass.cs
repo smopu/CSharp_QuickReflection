@@ -30,6 +30,10 @@ public class MyClass
     public Vector3 Point { get; set; }
 
 
+    public int[,,] oness;
+    public string[,] strss;
+    public Vector3[,] pointss;
+
     public int[] ones;
     public string[] strs;
     public Vector3[] points;

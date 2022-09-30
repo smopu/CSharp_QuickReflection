@@ -1,8 +1,10 @@
 {
   "version": 2,
-  "dgSpecHash": "we6LnluxbH0hOVbFJo4rkX21QrszUSKBACZEArHrAHNoZInHEzDbU4vUhoLdN3pGfFtNFGoE6W3Utsa7HigT9Q==",
+  "dgSpecHash": "siwlHLgnshauQmVX9Hisviy1h6pfKPIVXA26BWwvt7sNGBLrpKl4mmNzd2h0AAQ1AGfcOA+1dGO/XVVQNQh38Q==",
   "success": true,
   "projectFilePath": "F:\\a\\ReflectionTest\\q\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\ConsoleApp1.csproj",
-  "expectedPackageFiles": [],
+  "expectedPackageFiles": [
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder\\system.runtime.compilerservices.unsafe\\4.5.0\\system.runtime.compilerservices.unsafe.4.5.0.nupkg.sha512"
+  ],
   "logs": []
 }

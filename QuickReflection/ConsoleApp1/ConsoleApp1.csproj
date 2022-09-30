@@ -9,6 +9,10 @@
     <OutputType>Exe</OutputType>
   </PropertyGroup>
 
+  <ItemGroup>
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.5.0" />
+  </ItemGroup>
+
 
   <ItemGroup>
     <Reference Include="DynamicCustomReflection">

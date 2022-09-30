@@ -9,3 +9,4 @@ F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Deb
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\net45\ConsoleApp1.exe
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\ConsoleApp1.csproj.SuggestedBindingRedirects.cache
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\ConsoleApp1.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\net45\System.Runtime.CompilerServices.Unsafe.dll
