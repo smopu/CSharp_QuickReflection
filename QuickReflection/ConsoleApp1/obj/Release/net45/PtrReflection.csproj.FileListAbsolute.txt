@@ -1,0 +1,12 @@
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net45\PtrReflection.exe.config
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net45\PtrReflection.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net45\PtrReflection.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net45\System.Runtime.CompilerServices.Unsafe.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net45\DynamicCustomReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.csproj.AssemblyReference.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.csproj.SuggestedBindingRedirects.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.GeneratedMSBuildEditorConfig.editorconfig
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.csproj.CoreCompileInputs.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.csproj.CopyComplete
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net45\PtrReflection.pdb

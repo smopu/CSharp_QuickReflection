@@ -84,7 +84,11 @@ namespace PtrReflection
         }
 
         public abstract object CreateArray(ref ArrayWrapInputData arrayWrapData);
+
         public abstract ArrayWrapOutData GetArrayData(Array array);
+
+        public abstract void GetArrayData(Array array, ref ArrayWrapOutData outData);
+
 
         public unsafe object GetValue(void* source, int index)
         {
@@ -262,18 +266,32 @@ namespace PtrReflection
 
         public override ArrayWrapOutData GetArrayData(Array array)
         {
-            ArrayWrapOutData arrayWrapData = new ArrayWrapOutData();
-            arrayWrapData.arrayLengths = new int[array.Rank];
+            ArrayWrapOutData outData = new ArrayWrapOutData();
+            outData.arrayLengths = new int[array.Rank];
             for (int i = 0; i < array.Rank; i++)
             {
-                arrayWrapData.arrayLengths[i] = array.GetLength(i);
+                outData.arrayLengths[i] = array.GetLength(i);
             }
             IntPtr* p = (IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(array);
-            arrayWrapData.objPtr = (byte*)p;
+            outData.objPtr = (byte*)p;
             p += 2;
-            arrayWrapData.startItemOffcet = ((byte*)p);
-            arrayWrapData.startItemOffcet += rank * 8;
-            return arrayWrapData;
+            outData.startItemOffcet = ((byte*)p);
+            outData.startItemOffcet += rank * 8;
+            return outData;
+        }
+
+        public override void GetArrayData(Array array, ref ArrayWrapOutData outData)
+        {
+            outData.arrayLengths = new int[array.Rank];
+            for (int i = 0; i < array.Rank; i++)
+            {
+                outData.arrayLengths[i] = array.GetLength(i);
+            }
+            IntPtr* p = (IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(array);
+            outData.objPtr = (byte*)p;
+            p += 2;
+            outData.startItemOffcet = ((byte*)p);
+            outData.startItemOffcet += rank * 8;
         }
 
     }
@@ -296,17 +314,26 @@ namespace PtrReflection
         }
         public override ArrayWrapOutData GetArrayData(Array array)
         {
-            ArrayWrapOutData arrayWrapData = new ArrayWrapOutData();
-            arrayWrapData.length = array.Length;
-
-            ulong gcHandle;
-            arrayWrapData.objPtr = GeneralTool.ObjectToVoidPtr(array);
-            IntPtr* p = (IntPtr*)arrayWrapData.objPtr;
+            ArrayWrapOutData outData = new ArrayWrapOutData();
+            outData.length = array.Length;
+            //ulong gcHandle;
+            outData.objPtr = GeneralTool.ObjectToVoidPtr(array);
+            IntPtr* p = (IntPtr*)outData.objPtr;
             p += 2;
-            arrayWrapData.startItemOffcet = (byte*)p;
+            outData.startItemOffcet = (byte*)p;
 
-            return arrayWrapData;
+            return outData;
         }
+
+        public override void GetArrayData(Array array, ref ArrayWrapOutData outData)
+        {
+            outData.length = array.Length;
+            outData.objPtr = GeneralTool.ObjectToVoidPtr(array);
+            IntPtr* p = (IntPtr*)outData.objPtr;
+            p += 2;
+            outData.startItemOffcet = (byte*)p;
+        }
+
     }
 
 }

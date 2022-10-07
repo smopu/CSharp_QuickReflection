@@ -8,10 +8,8 @@ using System.Threading.Tasks;
 using System.Reflection.Emit;
 using System.Runtime.CompilerServices;
 
-// public delegate*<object, void*> objectToVoidPtr;
 namespace ConsoleApp1
 {
-
     [StructLayout(LayoutKind.Explicit)]
     public unsafe class UnsafeTool
     {
@@ -27,9 +25,6 @@ namespace ConsoleApp1
         public VoidPtrToObject voidPtrToObject;
         [FieldOffset(8)]
         Func<object, object> func2;
-
-
-
         public UnsafeTool()
         {
             func = Out;

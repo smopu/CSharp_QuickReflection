@@ -1,0 +1,15 @@
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net6.0\PtrReflection.exe
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net6.0\PtrReflection.deps.json
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net6.0\PtrReflection.runtimeconfig.json
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net6.0\PtrReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net6.0\PtrReflection.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Release\net6.0\DynamicCustomReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.csproj.AssemblyReference.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.GeneratedMSBuildEditorConfig.editorconfig
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.csproj.CoreCompileInputs.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.csproj.CopyComplete
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\refint\PtrReflection.dll
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.pdb
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\PtrReflection.genruntimeconfig.cache
+F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Release\net6.0\ref\PtrReflection.dll

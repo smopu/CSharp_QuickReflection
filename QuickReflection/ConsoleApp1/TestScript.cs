@@ -53,15 +53,6 @@ public class TestScript
         }
         object Out(object o) { return o; }
     }
-    
-    public unsafe struct ObjReference
-    {
-        public object obj;
-        public ObjReference(object obj) 
-        {
-            this.obj = obj;
-        }
-    }
 
     public unsafe void RunTest2()
     {
@@ -512,7 +503,6 @@ public class TestScript
             DebugLog(sb.ToString());
 
 
-
             for (int x = 0, i = 0; x < arrayWrapOutData.arrayLengths[0]; x++)
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++, i++)
@@ -715,77 +705,9 @@ public class TestScript
         fixed (char* _One = fieldName_One)
         fixed (char* _Point = fieldName_Point)
         {
-            //fieldName = "one";
-            //nameSize = fieldName.Length;
-
             var addr1 = warp.Find(_str, fieldName_strLength);
             var addr2 = warp.Find(_one, fieldName_oneLength);
             var addr3 = warp.Find(_point, fieldName_pointLength);
-
-
-            //oTime.Reset(); oTime.Start();
-            //for (int i = 0; i < testCount; i++)
-            //{
-            //    typeof(MyClass).GetField(nameof(MyClass.str)).SetValue(myClass, str);
-            //    typeof(MyClass).GetField(nameof(MyClass.one)).SetValue(myClass, 18);
-            //    typeof(MyClass).GetField(nameof(MyClass.point)).SetValue(myClass, point);
-            //}
-            //oTime.Stop();
-            //DebugLog("FieldInfo SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
-            //oTime.Reset(); oTime.Start();
-            //for (int i = 0; i < testCount; i++)
-            //{
-            //    warp.nameOfField[nameof(MyClass.str)].SetValue(handleVoid, str);
-            //    warp.nameOfField[nameof(MyClass.one)].SetValue(handleVoid, 18);
-            //    warp.nameOfField[nameof(MyClass.point)].SetValue(handleVoid, point);
-            //}
-            //oTime.Stop();
-            //DebugLog("指针方法 SetValue 使用object类型 string查询 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
-
-            //oTime.Reset(); oTime.Start();
-            //for (int i = 0; i < testCount; i++)
-            //{
-            //    warp.Find(_str, fieldName_strLength).SetValue(handleVoid, str);
-            //    warp.Find(_one, fieldName_oneLength).SetValue(handleVoid, 18);
-            //    warp.Find(_point, fieldName_pointLength).SetValue(handleVoid, point);
-            //}
-            //oTime.Stop();
-            //DebugLog("指针方法 SetValue 使用object类型 char*查询 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
-            //oTime.Reset(); oTime.Start();
-            //for (int i = 0; i < testCount; i++)
-            //{
-            //    GeneralTool.SetObject(*handleByte + warp.Find(_str, fieldName_strLength).offset, str);
-            //    *(int*)(*handleByte + warp.Find(_one, fieldName_oneLength).offset) = 18;
-            //    var addr = warp.Find(_point, fieldName_pointLength);
-            //    GeneralTool.MemCpy(*handleByte + addr.offset, GeneralTool.AsPointer(ref point), addr.stackSize);
-            //}
-            //oTime.Stop();
-            //DebugLog("指针方法 SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
-            //oTime.Reset(); oTime.Start();
-            //for (int i = 0; i < testCount; i++)
-            //{
-            //    GeneralTool.SetObject(*handleByte + addr1.offset, str);
-            //    *(int*)(handleVoid + addr2.offset) = 18;
-            //    GeneralTool.MemCpy(handleVoid + addr3.offset, GeneralTool.AsPointer(ref point), addr3.stackSize);
-            //}
-            //oTime.Stop();
-            //DebugLog("指针方法 SetValue 忽略字符串查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
-
-
-            //oTime.Reset(); oTime.Start();
-            //for (int i = 0; i < testCount; i++)
-            //{
-            //    myClass.one = 18;
-            //    myClass.str = str;
-            //    myClass.point = point;
-            //}
-            //oTime.Stop();
-            //DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             DebugLog("");
             DebugLog("====================================");
@@ -1052,6 +974,33 @@ public class TestScript
             DebugLog("ArrayWrapManager GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             {
+                ArrayWrapOutData outData = new ArrayWrapOutData();
+                oTime.Reset(); oTime.Start();
+                for (int i = 0; i < testCount; i++)
+                {
+                    arrayWrapV1.GetArrayData(v1s, ref outData);
+                    for (int j = 0; j < outData.length; j++)
+                    {
+                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(outData.startItemOffcet + arrayWrapV1.elementTypeSize * j));
+                    }
+                    arrayWrapV2.GetArrayData(v2s, ref outData);
+                    for (int j = 0; j < outData.length; j++)
+                    {
+                        v2 = *(int*)(outData.startItemOffcet + arrayWrapV2.elementTypeSize * j);
+                    }
+                    arrayWrapV3.GetArrayData(v3s, ref outData);
+                    for (int j = 0; j < outData.length; j++)
+                    {
+                        v3 = *(Vector3*)(outData.startItemOffcet + arrayWrapV3.elementTypeSize * j);
+                    }
+                }
+                oTime.Stop();
+                DebugLog("ArrayWrapManager GetValue 确定类型的2：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            }
+
+
+
+            {
                 ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
                 ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
                 ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
@@ -1164,7 +1113,6 @@ public class TestScript
             }
             oTime.Stop();
             DebugLog("ArrayWrapManager SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
 
             {
                 ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
@@ -1532,7 +1480,7 @@ public class TestScript
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("Multidimensional ArrayWrapManager SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             {
                 ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
@@ -1568,7 +1516,7 @@ public class TestScript
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager GetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("Multidimensional ArrayWrapManager SetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -1641,9 +1589,4 @@ public class TestScript
     }
 
 
-
-    void Update()
-    {
-
-    }
 }

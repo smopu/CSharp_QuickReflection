@@ -140,9 +140,9 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "F:\\a\\ReflectionTest\\q\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\ConsoleApp1.csproj",
-      "projectName": "ConsoleApp1",
-      "projectPath": "F:\\a\\ReflectionTest\\q\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\ConsoleApp1.csproj",
+      "projectUniqueName": "F:\\a\\ReflectionTest\\q\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj",
+      "projectName": "PtrReflection",
+      "projectPath": "F:\\a\\ReflectionTest\\q\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj",
       "packagesPath": "C:\\Users\\smopu!M\\.nuget\\packages\\",
       "outputPath": "F:\\a\\ReflectionTest\\q\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\obj\\",
       "projectStyle": "PackageReference",
