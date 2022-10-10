@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,55 +10,20 @@ using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
 using PtrReflection;
 
-public class TestScript 
+public class TestScript
 {
     public int testCount = 100000;
     System.Diagnostics.Stopwatch oTime = new System.Diagnostics.Stopwatch();
 
-    StringBuilder sb = new StringBuilder();
     void DebugLog(object obj)
     {
         Console.WriteLine(Convert.ToString(obj));
     }
 
-    private unsafe Vector3 GCC(void* a)
-    {
-        return *((Vector3*)new IntPtr(a));
-    }
-
-    private unsafe void Start()
-    {
-    }
-
-
-    [StructLayout(LayoutKind.Explicit)]
-    public unsafe class UnsafeTool
-    {
-        public delegate void* ObjectToVoidPtr(object obj);
-        public delegate object VoidPtrToObject(void* obj);
-        [FieldOffset(0)]
-        public ObjectToVoidPtr ObjectToVoid;
-
-        [FieldOffset(0)]
-        Func<object, object> func;
-
-        [FieldOffset(8)]
-        public VoidPtrToObject VoidToObject;
-        [FieldOffset(8)]
-        Func<object, object> func2;
-
-        public UnsafeTool()
-        {
-            func = Out;
-            func2 = Out;
-        }
-        object Out(object o) { return o; }
-    }
 
     public unsafe void RunTest2()
     {
         StringBuilder sb = new StringBuilder();
-        UnsafeTool tool = new UnsafeTool();
         string fieldName = "One";
         var warp = TypeAddrReflectionWrapper.GetWrapper(typeof(MyClass));
 
@@ -65,7 +31,7 @@ public class TestScript
         //tool.GetType().TypeHandle.Value;
 
         var instens = (MyClass)warp.Create();
-         //instens = new MyClass();
+        //instens = new MyClass();
 
         TypedReference d = __makeref(instens);
 
@@ -137,7 +103,6 @@ public class TestScript
             DebugLog("不指定类型赋值后 输出 0, -9999 , 12.888 : " + instens.point);
         }
 
-
         DebugLog(" ");
         DebugLog("====↓↓↓↓ 属性 ↓↓↓↓===== ");
         DebugLog(" ");
@@ -201,157 +166,165 @@ public class TestScript
             DebugLog("不指定类型赋值后 输出 0, -9999 , 12.888 : " + instens.Point);
         }
 
-       instens.ones = new int[] { 1, 2, 8, 476, 898, 9 };
-       instens.strs = new string[] {"ass","#$%^&","*SAHASww&()", "兀驦屮鲵傌" };
-       instens.points = new Vector3[] {
+        instens.ones = new int[] { 1, 2, 8, 476, 898, 9 };
+        instens.strs = new string[] { "ass", "#$%^&", "*SAHASww&()", "兀驦屮鲵傌" };
+        instens.points = new Vector3[] {
            new Vector3(3, -4.5f, 97.4f),
            new Vector3(9999f, -43f, 0.019f),
            new Vector3(55.3f, -0.01f, -130),
        };
 
 
-       fieldName = "ones";
-       fixed (char* fieldNamePtr = fieldName)
-       {
-           TypeAddrFieldAndProperty addr = warp.Find(fieldNamePtr, fieldName.Length);
-           var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
+        fieldName = "ones";
+        fixed (char* fieldNamePtr = fieldName)
+        {
+            TypeAddrFieldAndProperty addr = warp.Find(fieldNamePtr, fieldName.Length);
+            var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
 
-           Array array = (Array)addr.GetValue(handleVoid);
-           ArrayWrapOutData arrayWrapOutData = arrayWrap.GetArrayData(array);
+            Array array = (Array)addr.GetValue(handleVoid);
+            ArrayWrapData arrayWrapOutData = arrayWrap.GetArrayData(array);
 
-           DebugLog("取值后 输出 1, 2, 8, 476, 898, 9  : " );
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               int value = *(int*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i);
-               DebugLog(value);
-           }
+            d = __makeref(array);
+            byte** pp = *(byte***)(&d);
 
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               *(int*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i) = i;
-           }
-           DebugLog("赋值后 输出  0, 1, 2, 3, 4, 5  : ");
-           for (int i = 0; i < array.Length; i++)
-           {
-               DebugLog(array.GetValue(i));
-           }
+            DebugLog("取值后 输出 1, 2, 8, 476, 898, 9  : ");
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                int value = *(int*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i);
+                DebugLog(value);
+            }
 
-           DebugLog("不指定类型取值后 输出 0, 1, 2, 3, 4, 5 : ");
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, i);
-               DebugLog(value);
-           }
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                *(int*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i) = i;
+            }
+            DebugLog("赋值后 输出  0, 1, 2, 3, 4, 5  : ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                DebugLog(array.GetValue(i));
+            }
 
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               arrayWrap.SetValue(arrayWrapOutData.startItemOffcet, i, 100 * i);
-           }
-           DebugLog("不指定类型赋值后 输出 0, 100, 200, 300, 400, 500 : ");
-           for (int i = 0; i < array.Length; i++)
-           {
-               DebugLog(array.GetValue(i));
-           }
-       }
+            DebugLog("不指定类型取值后 输出 0, 1, 2, 3, 4, 5 : ");
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                object value = arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, i);
+                DebugLog(value);
+            }
 
-       fieldName = "strs";
-       fixed (char* fieldNamePtr = fieldName)
-       {
-           TypeAddrFieldAndProperty addr = warp.Find(fieldNamePtr, fieldName.Length);
-           var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                arrayWrap.SetValue(*pp + arrayWrapOutData.startItemOffcet, i, 100 * i);
+            }
+            DebugLog("不指定类型赋值后 输出 0, 100, 200, 300, 400, 500 : ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                DebugLog(array.GetValue(i));
+            }
+        }
 
-           Array array = (Array)addr.GetValue(handleVoid);
-           ArrayWrapOutData arrayWrapOutData = arrayWrap.GetArrayData(array);
+        fieldName = "strs";
+        fixed (char* fieldNamePtr = fieldName)
+        {
+            TypeAddrFieldAndProperty addr = warp.Find(fieldNamePtr, fieldName.Length);
+            var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
 
-           DebugLog("取值后 输出 ass,#$%^&,*SAHASww&(), 兀驦屮鲵傌 : ");
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               string value = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i));
-               DebugLog(value);
-           }
+            Array array = (Array)addr.GetValue(handleVoid);
+            ArrayWrapData arrayWrapOutData = arrayWrap.GetArrayData(array);
 
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               GeneralTool.SetObject(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i, "Ac4……*" + i);
-           }
-           DebugLog("赋值后 输出  Ac4……*0, Ac4……*1, Ac4……*2, Ac4……*3  : ");
-           for (int i = 0; i < array.Length; i++)
-           {
-               DebugLog(array.GetValue(i));
-           }
+            d = __makeref(array);
+            byte** pp = *(byte***)(&d);
 
-           DebugLog("不指定类型取值后 输出 Ac4……*0, Ac4……*1, Ac4……*2, Ac4……*3  : ");
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, i);
-               DebugLog(value);
-           }
+            DebugLog("取值后 输出 ass,#$%^&,*SAHASww&(), 兀驦屮鲵傌 : ");
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                string value = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i));
+                DebugLog(value);
+            }
 
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               arrayWrap.SetValue(arrayWrapOutData.startItemOffcet, i, "Fc%^" + i * 100);
-           }
-           DebugLog("不指定类型赋值后 输出 Fc%^0, Fc%^100, Fc%^200, Fc%^300 : ");
-           for (int i = 0; i < array.Length; i++)
-           {
-               DebugLog(array.GetValue(i));
-           }
-       }
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                GeneralTool.SetObject(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i, "Ac4……*" + i);
+            }
+            DebugLog("赋值后 输出  Ac4……*0, Ac4……*1, Ac4……*2, Ac4……*3  : ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                DebugLog(array.GetValue(i));
+            }
 
-       fieldName = "points";
-       fixed (char* fieldNamePtr = fieldName)
-       {
-           TypeAddrFieldAndProperty addr = warp.Find(fieldNamePtr, fieldName.Length);
-           var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
+            DebugLog("不指定类型取值后 输出 Ac4……*0, Ac4……*1, Ac4……*2, Ac4……*3  : ");
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                object value = arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, i);
+                DebugLog(value);
+            }
 
-           Array array = (Array)addr.GetValue(handleVoid);
-           ArrayWrapOutData arrayWrapOutData = arrayWrap.GetArrayData(array);
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                arrayWrap.SetValue(*pp + arrayWrapOutData.startItemOffcet, i, "Fc%^" + i * 100);
+            }
+            DebugLog("不指定类型赋值后 输出 Fc%^0, Fc%^100, Fc%^200, Fc%^300 : ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                DebugLog(array.GetValue(i));
+            }
+        }
 
-           DebugLog("取值后 输出 (3, -4.5, 97.4) (9999, -43, 0.019) (55.3, -0.01, -130) : ");
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               Vector3 value = *(Vector3*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i);
-               DebugLog(value);
-           }
+        fieldName = "points";
+        fixed (char* fieldNamePtr = fieldName)
+        {
+            TypeAddrFieldAndProperty addr = warp.Find(fieldNamePtr, fieldName.Length);
+            var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
 
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               var v = new Vector3(i, i, i);
-               GeneralTool.MemCpy(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i, GeneralTool.AsPointer(ref v), arrayWrap.elementTypeSize);
-           }
+            Array array = (Array)addr.GetValue(handleVoid);
+            ArrayWrapData arrayWrapOutData = arrayWrap.GetArrayData(array);
 
-           DebugLog("赋值后 输出  (0,0,0) , (1,1,1) , (2,2,2)  : ");
-           for (int i = 0; i < array.Length; i++)
-           {
-               DebugLog(array.GetValue(i));
-           }
+            d = __makeref(array);
+            byte** pp = *(byte***)(&d);
+
+            DebugLog("取值后 输出 (3, -4.5, 97.4) (9999, -43, 0.019) (55.3, -0.01, -130) : ");
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                Vector3 value = *(Vector3*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i);
+                DebugLog(value);
+            }
+
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                var v = new Vector3(i, i, i);
+                GeneralTool.MemCpy(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i, GeneralTool.AsPointer(ref v), arrayWrap.elementTypeSize);
+            }
+
+            DebugLog("赋值后 输出  (0,0,0) , (1,1,1) , (2,2,2)  : ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                DebugLog(array.GetValue(i));
+            }
 
 
-           DebugLog("不指定类型取值后 输出  (0,0,0) , (1,1,1) , (2,2,2)  : ");
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, i);
-               DebugLog(value);
-           }
+            DebugLog("不指定类型取值后 输出  (0,0,0) , (1,1,1) , (2,2,2)  : ");
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                object value = arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, i);
+                DebugLog(value);
+            }
 
-           for (int i = 0; i < arrayWrapOutData.length; i++)
-           {
-               arrayWrap.SetValue(arrayWrapOutData.startItemOffcet, i, new Vector3(i * 100, i * 10, i * 1000));
-           }
-           DebugLog("不指定类型赋值后 输出  (0,0,0) , (100,10,1000) , (200,20,2000) : ");
-           for (int i = 0; i < array.Length; i++)
-           {
-               DebugLog(array.GetValue(i));
-           }
-       }
+            for (int i = 0; i < arrayWrapOutData.length; i++)
+            {
+                arrayWrap.SetValue(*pp + arrayWrapOutData.startItemOffcet, i, new Vector3(i * 100, i * 10, i * 1000));
+            }
+            DebugLog("不指定类型赋值后 输出  (0,0,0) , (100,10,1000) , (200,20,2000) : ");
+            for (int i = 0; i < array.Length; i++)
+            {
+                DebugLog(array.GetValue(i));
+            }
+        }
 
-        instens.oness = new int[,,] 
+        instens.oness = new int[,,]
         {
             { { 1, 2 },{  252, 1331 },{ 55, 66 } },
             { { 11, 898},{ 13, -19 },{ -1, -999999 } },
             { { 4576, 8198 },{ 0, 0 },{ 4176, 8958 } }
         };
-
         instens.strss = new string[,] {
             { "ass", "#$%^&", "*SAHASww&()", "兀驦屮鲵傌" },
             { "adsadad", "⑤驦屮尼傌", "fun(a*(b+c))", "FSD手动阀手动阀" },
@@ -381,7 +354,10 @@ public class TestScript
             var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
 
             Array array = (Array)addr.GetValue(handleVoid);
-            ArrayWrapOutData arrayWrapOutData = arrayWrap.GetArrayData(array);
+            ArrayWrapData arrayWrapOutData = arrayWrap.GetArrayData(array);
+
+            d = __makeref(array);
+            byte** pp = *(byte***)(&d);
 
             DebugLog("取值后 输出\n1,2,252,1331,55,66,11,898,13,-19,-1,-999999,4576,8198,0,0,4176,8958: ");
 
@@ -394,7 +370,7 @@ public class TestScript
                 {
                     for (int z = 0; z < arrayWrapOutData.arrayLengths[2]; z++)
                     {
-                        int value = *(int*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * 
+                        int value = *(int*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize *
                             (x * yzL + y * zL + z)
                             );
                         sb.Append(value + ",");
@@ -405,7 +381,7 @@ public class TestScript
 
             for (int i = 0; i < arrayWrapOutData.length; i++)
             {
-                *(int*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i) = i;
+                *(int*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * i) = i;
             }
             for (int x = 0, i = 0; x < arrayWrapOutData.arrayLengths[0]; x++)
             {
@@ -413,7 +389,7 @@ public class TestScript
                 {
                     for (int z = 0; z < arrayWrapOutData.arrayLengths[2]; z++, i++)
                     {
-                        *(int*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yzL + y * zL + z)) = i;
+                        *(int*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yzL + y * zL + z)) = i;
                     }
                 }
             }
@@ -434,18 +410,13 @@ public class TestScript
 
             DebugLog("不指定类型取值后 输出\n0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17: ");
             sb.Clear();
-            for (int i = 0; i < arrayWrapOutData.length; i++)
-            {
-                object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, i);
-                DebugLog(value);
-            }
             for (int x = 0, i = 0; x < arrayWrapOutData.arrayLengths[0]; x++)
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++)
                 {
                     for (int z = 0; z < arrayWrapOutData.arrayLengths[2]; z++, i++)
                     {
-                        object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, (x * yzL + y * zL + z));
+                        object value = arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, (x * yzL + y * zL + z));
                         sb.Append(value + ",");
                     }
                 }
@@ -459,7 +430,7 @@ public class TestScript
                 {
                     for (int z = 0; z < arrayWrapOutData.arrayLengths[2]; z++, i++)
                     {
-                        arrayWrap.SetValue(arrayWrapOutData.startItemOffcet, (x * yzL + y * zL + z), -i);
+                        arrayWrap.SetValue(*pp + arrayWrapOutData.startItemOffcet, (x * yzL + y * zL + z), -i);
                     }
                 }
             }
@@ -471,7 +442,7 @@ public class TestScript
                 {
                     for (int z = 0; z < arrayWrapOutData.arrayLengths[2]; z++)
                     {
-                        sb.Append(arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, x * yzL + y * zL + z) + ",");
+                        sb.Append(arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, x * yzL + y * zL + z) + ",");
                     }
                 }
             }
@@ -487,7 +458,10 @@ public class TestScript
             var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
 
             Array array = (Array)addr.GetValue(handleVoid);
-            ArrayWrapOutData arrayWrapOutData = arrayWrap.GetArrayData(array);
+            ArrayWrapData arrayWrapOutData = arrayWrap.GetArrayData(array);
+
+            d = __makeref(array);
+            byte** pp = *(byte***)(&d);
 
             DebugLog("取值后 输出\nass,#$%^&,*SAHASww&(),兀驦屮鲵傌,adsadad,⑤驦屮尼傌,fun(a*(b+c)),FSD手动阀手动阀: ");
             int yL = arrayWrapOutData.arrayLengths[1];
@@ -496,18 +470,19 @@ public class TestScript
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++)
                 {
-                    string value = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y)));
+                    string value = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y)));
                     sb.Append(value + ",");
                 }
             }
             DebugLog(sb.ToString());
 
 
+
             for (int x = 0, i = 0; x < arrayWrapOutData.arrayLengths[0]; x++)
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++, i++)
                 {
-                    GeneralTool.SetObject(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y), "Ac4……*" + i);
+                    GeneralTool.SetObject(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y), "Ac4……*" + i);
                 }
             }
             sb.Clear();
@@ -527,7 +502,7 @@ public class TestScript
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++, i++)
                 {
-                    object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, (x * yL + y));
+                    object value = arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, (x * yL + y));
                     sb.Append(value + ",");
                 }
             }
@@ -538,7 +513,7 @@ public class TestScript
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++, i++)
                 {
-                    arrayWrap.SetValue(arrayWrapOutData.startItemOffcet, i, "Fc%^" + (x * yL + y) * 100);
+                    arrayWrap.SetValue(*pp + arrayWrapOutData.startItemOffcet, i, "Fc%^" + (x * yL + y) * 100);
                 }
             }
             DebugLog("不指定类型赋值后 输出\nFc%^0,Fc%^100,Fc%^200,Fc%^300,Fc%^400,Fc%^500,Fc%^600,Fc%^700: ");
@@ -561,7 +536,10 @@ public class TestScript
             var arrayWrap = ArrayWrapManager.GetIArrayWrap(addr.fieldOrPropertyType);
 
             Array array = (Array)addr.GetValue(handleVoid);
-            ArrayWrapOutData arrayWrapOutData = arrayWrap.GetArrayData(array);
+            ArrayWrapData arrayWrapOutData = arrayWrap.GetArrayData(array);
+
+            d = __makeref(array);
+            byte** pp = *(byte***)(&d);
 
             DebugLog("取值后 输出\n(3,-4.5,97.4),(9999,-43,0.019),(55.3,-0.01,-130),(0,-1.2E+19,97.4),(9999,-100000,0.019),(55.3,-0.01,-130),(3,-4.5,5555.5557),(12321.444,-1E-06,0.019),(1234,-982.3,-299): ");
             int yL = arrayWrapOutData.arrayLengths[1];
@@ -570,7 +548,7 @@ public class TestScript
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++)
                 {
-                    Vector3 value = *(Vector3*)(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y));
+                    Vector3 value = *(Vector3*)(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y));
                     sb.Append(value + ",");
                 }
             }
@@ -582,7 +560,7 @@ public class TestScript
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++, i++)
                 {
                     var v = new Vector3(i, i, i);
-                    GeneralTool.MemCpy(arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y), GeneralTool.AsPointer(ref v), arrayWrap.elementTypeSize);
+                    GeneralTool.MemCpy(*pp + arrayWrapOutData.startItemOffcet + arrayWrap.elementTypeSize * (x * yL + y), GeneralTool.AsPointer(ref v), arrayWrap.elementTypeSize);
                 }
             }
             DebugLog("赋值后 输出\n(0,0,0),(1,1,1),(2,2,2),(3,3,3),(4,4,4),(5,5,5),(6,6,6),(7,7,7),(8,8,8): ");
@@ -604,7 +582,7 @@ public class TestScript
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++)
                 {
                     //object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, i);
-                    object value = arrayWrap.GetValue(arrayWrapOutData.startItemOffcet, (x * yL + y));
+                    object value = arrayWrap.GetValue(*pp + arrayWrapOutData.startItemOffcet, (x * yL + y));
                     sb.Append(value + ",");
                 }
             }
@@ -615,7 +593,7 @@ public class TestScript
             {
                 for (int y = 0; y < arrayWrapOutData.arrayLengths[1]; y++, i++)
                 {
-                    arrayWrap.SetValue(arrayWrapOutData.startItemOffcet, (x * yL + y), new Vector3(i * 100, i * 10, i * 1000));
+                    arrayWrap.SetValue(*pp + arrayWrapOutData.startItemOffcet, (x * yL + y), new Vector3(i * 100, i * 10, i * 1000));
                 }
             }
             DebugLog("不指定类型赋值后 输出\n(0,0,0),(100,10,1000),(200,20,2000),(300,30,3000),(400,40,4000),(500,50,5000),(600,60,6000),(700,70,7000),(800,80,8000): ");
@@ -631,13 +609,14 @@ public class TestScript
             DebugLog(sb.ToString());
         }
 
-
         /*
        //text.text = sb.ToString();
 
        //UnsafeUtility.ReleaseGCObject(gcHandle);
 
-       //*/
+
+
+        //*/
         GC.Collect();
         Console.ReadKey();
         return;
@@ -651,15 +630,15 @@ public class TestScript
     int[,,] v2ss;
     Vector3[,] v3ss;
 
-
     string v1;
     int v2;
     Vector3 v3;
     MyClass a;
     MyClass myClass;
+
+    ///*
     public unsafe void RunTest()
     {
-        ///*
         var warp = TypeAddrReflectionWrapper.GetWrapper(typeof(MyClass));
 
         string fieldName = "str";
@@ -722,7 +701,7 @@ public class TestScript
                 v3 = (Vector3)typeof(MyClass).GetField(nameof(MyClass.point)).GetValue(myClass);
             }
             oTime.Stop();
-            DebugLog("FieldInfo GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 FieldInfo GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -785,7 +764,7 @@ public class TestScript
             DebugLog("=========↓↓↓Property↓↓↓=============");
             DebugLog("");
 
-            addr1 =  warp.Find(_Str, fieldName_StrLength);
+            addr1 = warp.Find(_Str, fieldName_StrLength);
             addr2 = warp.Find(_One, fieldName_OneLength);
             addr3 = warp.Find(_Point, fieldName_PointLength);
             oTime.Reset(); oTime.Start();
@@ -796,7 +775,7 @@ public class TestScript
                 typeof(MyClass).GetProperty(nameof(MyClass.Point)).SetValue(myClass, point);
             }
             oTime.Stop();
-            DebugLog("PropertyInfo SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 PropertyInfo SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -805,14 +784,14 @@ public class TestScript
                 warp.Find(_One, fieldName_OneLength).SetValue(handleVoid, 18);
                 warp.Find(_Point, fieldName_PointLength).SetValue(handleVoid, point);
             }
-            
+
             oTime.Stop();
             DebugLog("指针方法 SetValue 使用object类型：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                 warp.Find(_Str, fieldName_StrLength).propertyDelegateItem.setString(*handleVoid, str);
+                warp.Find(_Str, fieldName_StrLength).propertyDelegateItem.setString(*handleVoid, str);
                 warp.Find(_One, fieldName_OneLength).propertyDelegateItem.setInt32(*handleVoid, 18);
                 warp.Find(_Point, fieldName_PointLength).propertyDelegateItem.setObject(*handleVoid, point);
             }
@@ -853,12 +832,12 @@ public class TestScript
                 v3 = (Vector3)typeof(MyClass).GetProperty(nameof(MyClass.Point)).GetValue(myClass);
             }
             oTime.Stop();
-            DebugLog("PropertyInfo GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 PropertyInfo GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                v1 = (string) warp.Find(_Str, fieldName_StrLength).GetValue(handleVoid);
+                v1 = (string)warp.Find(_Str, fieldName_StrLength).GetValue(handleVoid);
                 v2 = (int)warp.Find(_One, fieldName_OneLength).GetValue(handleVoid);
                 v3 = (Vector3)warp.Find(_Point, fieldName_PointLength).GetValue(handleVoid);
             }
@@ -868,7 +847,7 @@ public class TestScript
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                v1 =  warp.Find(_Str, fieldName_StrLength).propertyDelegateItem.getString(handleVoid);
+                v1 = warp.Find(_Str, fieldName_StrLength).propertyDelegateItem.getString(handleVoid);
                 v2 = warp.Find(_One, fieldName_OneLength).propertyDelegateItem.getInt32(handleVoid);
                 v3 = (Vector3)warp.Find(_Point, fieldName_PointLength).propertyDelegateItem.getObject(handleVoid);
             }
@@ -906,6 +885,14 @@ public class TestScript
             var arrayWrapV2 = ArrayWrapManager.GetIArrayWrap(typeof(int[]));
             var arrayWrapV3 = ArrayWrapManager.GetIArrayWrap(typeof(Vector3[]));
 
+            var d = __makeref(v1s);
+            byte** v1sP = *(byte***)(&d);
+            d = __makeref(v2s);
+            byte** v2sP = *(byte***)(&d);
+            d = __makeref(v3s);
+            byte** v3sP = *(byte***)(&d);
+
+
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
@@ -925,104 +912,79 @@ public class TestScript
                     v3 = (Vector3)arrayV3.GetValue(j);
                 }
             }
-
             oTime.Stop();
-            DebugLog("Array GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 Array GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
+
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
                 for (int j = 0; j < data1.length; j++)
                 {
-                    v1 = (string)arrayWrapV1.GetValue(data1.startItemOffcet, j);
+                    v1 = (string)arrayWrapV1.GetValue(*v1sP + data1.startItemOffcet, j);
                 }
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
                 for (int j = 0; j < data2.length; j++)
                 {
-                    v2 = (int)arrayWrapV2.GetValue(data2.startItemOffcet, j);
+                    v2 = (int)arrayWrapV2.GetValue(*v2sP + data2.startItemOffcet, j);
                 }
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 for (int j = 0; j < data3.length; j++)
                 {
-                    v3 = (Vector3)arrayWrapV3.GetValue(data3.startItemOffcet, j);
+                    v3 = (Vector3)arrayWrapV3.GetValue(*v3sP + data3.startItemOffcet, j);
                 }
             }
             oTime.Stop();
-            DebugLog("ArrayWrapManager GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
                 for (int j = 0; j < data1.length; j++)
                 {
-                    v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * j));
+                    v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * j));
                 }
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
                 for (int j = 0; j < data2.length; j++)
                 {
-                    v2 = *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * j);
+                    v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * j);
                 }
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 for (int j = 0; j < data3.length; j++)
                 {
-                    v3 = *(Vector3*)(data3.startItemOffcet + arrayWrapV3.elementTypeSize * j);
+                    v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j);
                 }
             }
             oTime.Stop();
-            DebugLog("ArrayWrapManager GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             {
-                ArrayWrapOutData outData = new ArrayWrapOutData();
-                oTime.Reset(); oTime.Start();
-                for (int i = 0; i < testCount; i++)
-                {
-                    arrayWrapV1.GetArrayData(v1s, ref outData);
-                    for (int j = 0; j < outData.length; j++)
-                    {
-                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(outData.startItemOffcet + arrayWrapV1.elementTypeSize * j));
-                    }
-                    arrayWrapV2.GetArrayData(v2s, ref outData);
-                    for (int j = 0; j < outData.length; j++)
-                    {
-                        v2 = *(int*)(outData.startItemOffcet + arrayWrapV2.elementTypeSize * j);
-                    }
-                    arrayWrapV3.GetArrayData(v3s, ref outData);
-                    for (int j = 0; j < outData.length; j++)
-                    {
-                        v3 = *(Vector3*)(outData.startItemOffcet + arrayWrapV3.elementTypeSize * j);
-                    }
-                }
-                oTime.Stop();
-                DebugLog("ArrayWrapManager GetValue 确定类型的2：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-            }
-
-
-
-            {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 oTime.Reset(); oTime.Start();
                 for (int i = 0; i < testCount; i++)
                 {
                     for (int j = 0; j < data1.length; j++)
                     {
-                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * j));
+                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * j));
                     }
                     for (int j = 0; j < data2.length; j++)
                     {
-                        v2 = *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * j);
+                        v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * j);
                     }
                     for (int j = 0; j < data3.length; j++)
                     {
-                        v3 = *(Vector3*)(data3.startItemOffcet + arrayWrapV3.elementTypeSize * j);
+                        v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j);
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("ArrayWrapManager GetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager GetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
@@ -1065,81 +1027,82 @@ public class TestScript
                 }
             }
             oTime.Stop();
-            DebugLog("Array SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 Array SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
                 for (int j = 0; j < data1.length; j++)
                 {
-                    arrayWrapV1.SetValue(data1.startItemOffcet, j, v1);
+                    arrayWrapV1.SetValue(*v1sP + data1.startItemOffcet, j, v1);
                 }
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
                 for (int j = 0; j < data2.length; j++)
                 {
-                    arrayWrapV2.SetValue(data2.startItemOffcet, j, v2);
+                    arrayWrapV2.SetValue(*v2sP + data2.startItemOffcet, j, v2);
                 }
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 for (int j = 0; j < data3.length; j++)
                 {
-                    arrayWrapV3.SetValue(data3.startItemOffcet, j, v3);
+                    arrayWrapV3.SetValue(*v3sP + data3.startItemOffcet, j, v3);
                 }
             }
             oTime.Stop();
-            DebugLog("ArrayWrapManager SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
                 for (int j = 0; j < data1.length; j++)
                 {
-                    GeneralTool.SetObject(data1.startItemOffcet + arrayWrapV1.elementTypeSize * j, v1);
+                    GeneralTool.SetObject(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * j, v1);
                 }
 
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
                 for (int j = 0; j < data2.length; j++)
                 {
-                    *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * j) = v2;
+                    *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * j) = v2;
                 }
 
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 for (int j = 0; j < data3.length; j++)
                 {
                     var v = new Vector3(j, j, j);
-                    GeneralTool.MemCpy(data3.startItemOffcet + arrayWrapV3.elementTypeSize * j, GeneralTool.AsPointer(ref v), arrayWrapV3.elementTypeSize);
+                    GeneralTool.MemCpy(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j, GeneralTool.AsPointer(ref v), arrayWrapV3.elementTypeSize);
                 }
             }
             oTime.Stop();
-            DebugLog("ArrayWrapManager SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
 
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1s);
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2s);
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3s);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 oTime.Reset(); oTime.Start();
                 for (int i = 0; i < testCount; i++)
                 {
                     for (int j = 0; j < data1.length; j++)
                     {
-                        GeneralTool.SetObject(data1.startItemOffcet + arrayWrapV1.elementTypeSize * j, v1);
+                        GeneralTool.SetObject(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * j, v1);
                     }
 
                     for (int j = 0; j < data2.length; j++)
                     {
-                        *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * j) = v2;
+                        *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * j) = v2;
                     }
 
                     for (int j = 0; j < data3.length; j++)
                     {
                         var v = new Vector3(i, i, i);
-                        GeneralTool.MemCpy(data3.startItemOffcet + arrayWrapV3.elementTypeSize * j, GeneralTool.AsPointer(ref v), arrayWrapV3.elementTypeSize);
+                        GeneralTool.MemCpy(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j, GeneralTool.AsPointer(ref v), arrayWrapV3.elementTypeSize);
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("ArrayWrapManager SetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager SetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
@@ -1161,22 +1124,28 @@ public class TestScript
             oTime.Stop();
             DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
-            
+            d = __makeref(v1ss);
+            v1sP = *(byte***)(&d);
+            d = __makeref(v2ss);
+            v2sP = *(byte***)(&d);
+            d = __makeref(v3ss);
+            v3sP = *(byte***)(&d);
+
 
             DebugLog("");
             DebugLog("=============↓↓↓Multidimensional Array↓↓↓===============");
             DebugLog("");
-            v1ss = new string[,] {
+            v1ss = new string[2, 4] {
                 { "ass", "#$%^&", "*SAHASww&()", "兀驦屮鲵傌" },
                 { "adsadad", "⑤驦屮尼傌", "fun(a*(b+c))", "FSD手动阀手动阀" },
             };
-            v2ss = new int[,,]
+            v2ss = new int[3, 3, 2]
             {
                 { { 1, 2 },{  252, 1331 },{ 55, 66 } },
                 { { 11, 898},{ 13, -19 },{ -1, -999999 } },
                 { { 4576, 8198 },{ 0, 0 },{ 4176, 8958 } }
             };
-            v3ss = new Vector3[,] {
+            v3ss = new Vector3[3, 3] {
                 {
                    new Vector3(3, -4.5f, 97.4f),
                    new Vector3(9999f, -43f, 0.019f),
@@ -1196,6 +1165,8 @@ public class TestScript
             arrayWrapV1 = ArrayWrapManager.GetIArrayWrap(v1ss.GetType());
             arrayWrapV2 = ArrayWrapManager.GetIArrayWrap(v2ss.GetType());
             arrayWrapV3 = ArrayWrapManager.GetIArrayWrap(v3ss.GetType());
+
+
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -1231,83 +1202,83 @@ public class TestScript
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional Array GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 Multidimensional Array GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1ss);
                 for (int x = 0; x < data1.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
                         //v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
-                        v1 = (string)arrayWrapV1.GetValue(data1.startItemOffcet, x * data1.arrayLengths[1] + y);
+                        v1 = (string)arrayWrapV1.GetValue(*v1sP + data1.startItemOffcet, x * data1.arrayLengths[1] + y);
                     }
                 }
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2ss);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
                 for (int x = 0; x < data2.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data2.arrayLengths[1]; y++)
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            v2 = (int)arrayWrapV2.GetValue(data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[1] + z));
+                            v2 = (int)arrayWrapV2.GetValue(*v2sP + data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
                         }
                     }
                 }
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3ss); 
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3ss);
                 for (int x = 0; x < data3.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                        v3 = (Vector3)arrayWrapV3.GetValue(data3.startItemOffcet, x * data3.arrayLengths[1] + y);
+                        v3 = (Vector3)arrayWrapV3.GetValue(*v3sP + data3.startItemOffcet, x * data3.arrayLengths[1] + y);
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Multidimensional ArrayWrapManager GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1ss);
                 for (int x = 0; x < data1.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
-                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
+                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
                     }
                 }
 
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2ss);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
                 for (int x = 0; x < data2.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data2.arrayLengths[1]; y++)
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            v2 = *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[1] + z));
+                            v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
                         }
                     }
                 }
 
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3ss);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3ss);
                 for (int x = 0; x < data3.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                        v3 = *(Vector3*)(data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
+                        v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Multidimensional ArrayWrapManager GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2ss);
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3ss);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1ss);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3ss);
                 oTime.Reset(); oTime.Start();
                 for (int i = 0; i < testCount; i++)
                 {
@@ -1315,7 +1286,7 @@ public class TestScript
                     {
                         for (int y = 0; y < data1.arrayLengths[1]; y++)
                         {
-                            v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
+                            v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
                         }
                     }
                     for (int x = 0; x < data2.arrayLengths[0]; x++)
@@ -1324,7 +1295,7 @@ public class TestScript
                         {
                             for (int z = 0; z < data2.arrayLengths[2]; z++)
                             {
-                                v2 = *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[1] + z));
+                                v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
                             }
                         }
                     }
@@ -1332,13 +1303,13 @@ public class TestScript
                     {
                         for (int y = 0; y < data3.arrayLengths[1]; y++)
                         {
-                            v3 = *(Vector3*)(data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
+                            v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
                         }
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager GetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Multidimensional ArrayWrapManager GetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -1406,86 +1377,89 @@ public class TestScript
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional Array SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 Multidimensional Array SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1ss);
                 for (int x = 0; x < data1.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
                         //v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
-                         arrayWrapV1.SetValue(data1.startItemOffcet, x * data1.arrayLengths[1] + y, v1);
+                        arrayWrapV1.SetValue(*v1sP + data1.startItemOffcet, x * data1.arrayLengths[1] + y, v1);
                     }
                 }
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2ss);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
                 for (int x = 0; x < data2.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data2.arrayLengths[1]; y++)
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            arrayWrapV2.SetValue(data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[1] + z), v2);
+                            arrayWrapV2.SetValue(*v2sP + data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z), v2);
                         }
                     }
                 }
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3ss);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3ss);
                 for (int x = 0; x < data3.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                         arrayWrapV3.SetValue(data3.startItemOffcet, x * data3.arrayLengths[1] + y, v3);
+                        arrayWrapV3.SetValue(*v3sP + data3.startItemOffcet, x * data3.arrayLengths[1] + y, v3);
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Multidimensional ArrayWrapManager SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1ss);
                 for (int x = 0; x < data1.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
                         GeneralTool.SetObject(
-                            (data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)),
+                            (*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)),
                             v1);
                     }
                 }
 
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2ss);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
                 for (int x = 0; x < data2.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data2.arrayLengths[1]; y++)
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[1] + z))
+                            *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z))
                                 = v2;
                         }
                     }
                 }
 
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3ss);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3ss);
                 for (int x = 0; x < data3.arrayLengths[0]; x++)
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                        GeneralTool.MemCpy((data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)), GeneralTool.AsPointer(ref v3), arrayWrapV3.elementTypeSize);
+                        // GeneralTool.MemCpy((data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)), GeneralTool.AsPointer(ref v3), arrayWrapV3.elementTypeSize);
+                        *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
                     }
                 }
+
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Multidimensional ArrayWrapManager SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
 
             {
-                ArrayWrapOutData data1 = arrayWrapV1.GetArrayData(v1ss);
-                ArrayWrapOutData data2 = arrayWrapV2.GetArrayData(v2ss);
-                ArrayWrapOutData data3 = arrayWrapV3.GetArrayData(v3ss);
+                ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1ss);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3ss);
                 oTime.Reset(); oTime.Start();
                 for (int i = 0; i < testCount; i++)
                 {
@@ -1493,7 +1467,7 @@ public class TestScript
                     {
                         for (int y = 0; y < data1.arrayLengths[1]; y++)
                         {
-                            GeneralTool.SetObject((data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)), v1);
+                            GeneralTool.SetObject(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y), v1);
                         }
                     }
                     for (int x = 0; x < data2.arrayLengths[0]; x++)
@@ -1502,7 +1476,7 @@ public class TestScript
                         {
                             for (int z = 0; z < data2.arrayLengths[2]; z++)
                             {
-                                *(int*)(data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[1] + z)) = v2;
+                                *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z)) = v2;
                             }
                         }
                     }
@@ -1510,13 +1484,13 @@ public class TestScript
                     {
                         for (int y = 0; y < data3.arrayLengths[1]; y++)
                         {
-                            *(Vector3*)(data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
+                            *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
                         }
                     }
                 }
             }
             oTime.Stop();
-            DebugLog("Multidimensional ArrayWrapManager SetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Multidimensional ArrayWrapManager SetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -1551,8 +1525,6 @@ public class TestScript
 
 
 
-
-
             DebugLog("");
             DebugLog("=============↓↓↓CreateInstance↓↓↓===============");
             DebugLog("");
@@ -1563,7 +1535,7 @@ public class TestScript
                 a = (MyClass)System.Activator.CreateInstance(typeof(MyClass));
             }
             oTime.Stop();
-            DebugLog("Activator CreateInstance：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生反射 Activator CreateInstance：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
@@ -1572,7 +1544,7 @@ public class TestScript
                 a = (MyClass)warp.Create();
             }
             oTime.Stop();
-            DebugLog("指针方法 Create：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 Create Class：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
@@ -1581,12 +1553,155 @@ public class TestScript
                 a = new MyClass();
             }
             oTime.Stop();
-            DebugLog(" new ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生 new Class ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("");
+
+
+            arrayWrapV1 = ArrayWrapManager.GetIArrayWrap(typeof(string[]));
+            arrayWrapV2 = ArrayWrapManager.GetIArrayWrap(typeof(int[]));
+            arrayWrapV3 = ArrayWrapManager.GetIArrayWrap(typeof(Vector3[]));
+            {
+                oTime.Reset(); oTime.Start();
+                for (int i = 0; i < testCount; i++)
+                {
+
+                    ArrayWrapData arrayWrapData1 = new ArrayWrapData
+                    {
+                        length = 5
+                    };
+                    v1s = (string[])arrayWrapV1.CreateArray(ref arrayWrapData1);
+
+                    ArrayWrapData arrayWrapData2 = new ArrayWrapData
+                    {
+                        length = 10
+                    };
+                    v2s = (int[])arrayWrapV2.CreateArray(ref arrayWrapData2);
+
+                    ArrayWrapData arrayWrapData3 = new ArrayWrapData
+                    {
+                        length = 4
+                    };
+                    v3s = (Vector3[])arrayWrapV3.CreateArray(ref arrayWrapData3);
+
+                }
+                oTime.Stop();
+            }
+            DebugLog("指针方法 创建数组：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            {
+                oTime.Reset(); oTime.Start();
+                for (int i = 0; i < testCount; i++)
+                {
+                    arrayWrapV1.allLength = 5;
+                    v1s = (string[])arrayWrapV1.CreateArray();
+                    arrayWrapV2.allLength = 10;
+                    v2s = (int[])arrayWrapV2.CreateArray();
+                    arrayWrapV3.allLength = 4;
+                    v3s = (Vector3[])arrayWrapV3.CreateArray();
+                }
+                oTime.Stop();
+            }
+            DebugLog("指针方法 创建数组 (不需要多余返回值)：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                v1s = (string[])Array.CreateInstance(typeof(string), 5);
+                v2s = (int[])Array.CreateInstance(typeof(int), 10);
+                v3s = (Vector3[])Array.CreateInstance(typeof(Vector3), 4);
+            }
+            oTime.Stop();
+            DebugLog("原生反射 创建数组 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                v1s = new string[5];
+                v2s = new int[10];
+                v3s = new Vector3[4];
+            }
+            oTime.Stop();
+            DebugLog("原生 new 数组 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
+            DebugLog("");
+
+
+            arrayWrapV1 = ArrayWrapManager.GetIArrayWrap(v1ss.GetType());
+            arrayWrapV2 = ArrayWrapManager.GetIArrayWrap(v2ss.GetType());
+            arrayWrapV3 = ArrayWrapManager.GetIArrayWrap(v3ss.GetType());
+            {
+                oTime.Reset(); oTime.Start();
+                for (int i = 0; i < testCount; i++)
+                {
+                    ArrayWrapData arrayWrapData1 = new ArrayWrapData();
+                    arrayWrapData1.arrayLengths = new int[] { 2, 4 };
+                    v1ss = (string[,])arrayWrapV1.CreateArray(ref arrayWrapData1);
+
+                    ArrayWrapData arrayWrapData2 = new ArrayWrapData();
+                    arrayWrapData2.arrayLengths = new int[] { 3, 3, 2 };
+                    v2ss = (int[,,])arrayWrapV2.CreateArray(ref arrayWrapData2);
+
+                    ArrayWrapData arrayWrapData3 = new ArrayWrapData();
+                    arrayWrapData3.arrayLengths = new int[] { 3, 3 };
+                    v3ss = (Vector3[,])arrayWrapV3.CreateArray(ref arrayWrapData3);
+                }
+                oTime.Stop();
+            }
+            DebugLog("指针方法 创建多维数组：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            {
+                oTime.Reset(); oTime.Start();
+                for (int i = 0; i < testCount; i++)
+                {
+                    arrayWrapV1.lengths[0] = 2;
+                    arrayWrapV1.lengths[1] = 4;
+                    arrayWrapV1.allLength = 2 * 4;
+                    v1ss = (string[,])arrayWrapV1.CreateArray();
+
+                    arrayWrapV2.lengths[0] = 3;
+                    arrayWrapV2.lengths[1] = 3;
+                    arrayWrapV2.lengths[2] = 2;
+                    arrayWrapV2.allLength = 3 * 3 * 2;
+                    v2ss = (int[,,])arrayWrapV2.CreateArray();
+
+                    arrayWrapV3.lengths[0] = 3;
+                    arrayWrapV3.lengths[1] = 3;
+                    arrayWrapV3.allLength = 3 * 3;
+                    v3ss = (Vector3[,])arrayWrapV3.CreateArray();
+                }
+                oTime.Stop();
+            }
+            DebugLog("指针方法 创建多维数组(不需要多余返回值)：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                v1ss = (string[,])Array.CreateInstance(typeof(string), new int[] { 2, 4 });
+                v2ss = (int[,,])Array.CreateInstance(typeof(int), new int[] { 3, 3, 2 });
+                v3ss = (Vector3[,])Array.CreateInstance(typeof(Vector3), new int[] { 3, 3 });
+            }
+            oTime.Stop();
+            DebugLog("原生反射 创建多维数组 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                v1ss = new string[2, 4];
+                v2ss = new int[3, 3, 2];
+                v3ss = new Vector3[3, 3];
+            }
+            oTime.Stop();
+            DebugLog("原生 new 多维数组 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
 
             GC.Collect();
         }
-        //*/
     }
+    //*/
 
 
 }

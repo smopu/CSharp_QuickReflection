@@ -7,29 +7,29 @@ using System.Threading.Tasks;
 
 namespace PtrReflection
 {
-    [StructLayout(LayoutKind.Explicit)]
-    public unsafe class UnsafeTool
-    {
-        public static UnsafeTool unsafeTool = new UnsafeTool();
-        public delegate void* ObjectToVoidPtr(object obj);
-        [FieldOffset(0)]
-        public ObjectToVoidPtr objectToVoidPtr;
-        [FieldOffset(0)]
-        Func<object, object> func;
+    //[StructLayout(LayoutKind.Explicit)]
+    //public unsafe class UnsafeTool
+    //{
+    //    public static UnsafeTool unsafeTool = new UnsafeTool();
+    //    public delegate void* ObjectToVoidPtr(object obj);
+    //    [FieldOffset(0)]
+    //    public ObjectToVoidPtr objectToVoidPtr;
+    //    [FieldOffset(0)]
+    //    Func<object, object> func;
 
-        public delegate object VoidPtrToObject(void* ptr);
-        [FieldOffset(0)]
-        public VoidPtrToObject voidPtrToObject;
-        [FieldOffset(0)]
-        Func<object, object> func2;
+    //    public delegate object VoidPtrToObject(void* ptr);
+    //    [FieldOffset(0)]
+    //    public VoidPtrToObject voidPtrToObject;
+    //    [FieldOffset(0)]
+    //    Func<object, object> func2;
 
-        public UnsafeTool()
-        {
-            func = Out;
-            func2 = Out;
-        }
-        object Out(object o) { return o; }
-    }
+    //    public UnsafeTool()
+    //    {
+    //        func = Out;
+    //        func2 = Out;
+    //    }
+    //    object Out(object o) { return o; }
+    //}
     public unsafe static class ArrayWrapManager
     {
         public static IArrayWrap GetIArrayWrap(Type type)
@@ -58,7 +58,8 @@ namespace PtrReflection
         public readonly Type elementType;
         public readonly bool isValueType;
         public IntPtr typeHead;
-
+        public int* lengths;
+        public int allLength;
         public IArrayWrap(int rank, Type elementType)
         {
             this.rank = rank;
@@ -75,20 +76,23 @@ namespace PtrReflection
             this.elementTypeCode = Type.GetTypeCode(elementType);
             if (rank == 1)
             {
-                this.head = *(IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(Array.CreateInstance(elementType, 0));
+                this.head = *(IntPtr*)GeneralTool.ObjectToVoidPtr(Array.CreateInstance(elementType, 0));
             }
             else
             {
-                this.head = *(IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(Array.CreateInstance(elementType, new int[rank]));
+                this.head = *(IntPtr*)GeneralTool.ObjectToVoidPtr(Array.CreateInstance(elementType, new int[rank]));
             }
+            lengths = (int*)Marshal.AllocHGlobal(rank);
         }
 
-        public abstract object CreateArray(ref ArrayWrapInputData arrayWrapData);
+        ~IArrayWrap()
+        {
+            Marshal.FreeHGlobal((IntPtr)lengths);
+        }
 
-        public abstract ArrayWrapOutData GetArrayData(Array array);
-
-        public abstract void GetArrayData(Array array, ref ArrayWrapOutData outData);
-
+        public abstract object CreateArray(ref ArrayWrapData arrayWrapData);
+        public abstract object CreateArray();
+        public abstract ArrayWrapData GetArrayData(Array array);
 
         public unsafe object GetValue(void* source, int index)
         {
@@ -218,80 +222,74 @@ namespace PtrReflection
                 GeneralTool.SetObject(field, value);
             }
         }
-
-
     }
 
-    public unsafe struct ArrayWrapInputData
-    {
-        public int length;
-        public int* arrayLengths;
-        public byte* objPtr;
-        public byte* startItemOffcet;
-        public GCHandle gCHandle;
-    }
 
-    public unsafe struct ArrayWrapOutData
+    public unsafe struct ArrayWrapData
     {
         public int length;
         public int[] arrayLengths;
-        public void* objPtr;
-        public byte* startItemOffcet;
-        public GCHandle gCHandle;
+        public int startItemOffcet;
+        //public GCHandle gCHandle;
     }
 
     unsafe class ArrayWrapRank : IArrayWrap
     {
         public ArrayWrapRank(int rank, Type elementType) : base(rank, elementType) { }
 
-        public override object CreateArray(ref ArrayWrapInputData arrayWrapData)
+        public override object CreateArray(ref ArrayWrapData arrayWrapData)
         {
             int offcet = rank * 8;
+            int* lengths = stackalloc int[rank];
+            arrayWrapData.length = 1;
+            for (int i = 0; i < rank; i++)
+            {
+                arrayWrapData.length *= arrayWrapData.arrayLengths[i];
+                lengths[i] = arrayWrapData.arrayLengths[i];
+            }
             int arrayMsize = offcet + arrayWrapData.length * this.elementTypeSize;
 
             object array = new byte[arrayMsize];
 
-            IntPtr* p = (IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(array);
-            arrayWrapData.objPtr = (byte*)p;
+            IntPtr* p = (IntPtr*)GeneralTool.ObjectToVoidPtr(array);
             *p = head;
             ++p;
             *p = (IntPtr)arrayWrapData.length; ++p;
-            //*p = type.TypeHandle.Value; ++p;
-            GeneralTool.MemCpy(p, arrayWrapData.arrayLengths, rank * 4);
-            arrayWrapData.startItemOffcet = ((byte*)p);
-            arrayWrapData.startItemOffcet += rank * 8;
+            GeneralTool.MemCpy(p, lengths, rank * 4);
+            arrayWrapData.startItemOffcet = 2 * UnsafeOperation.PTR_COUNT + rank * 8;
 
             return array;
         }
 
-        public override ArrayWrapOutData GetArrayData(Array array)
+        public override object CreateArray()
         {
-            ArrayWrapOutData outData = new ArrayWrapOutData();
-            outData.arrayLengths = new int[array.Rank];
-            for (int i = 0; i < array.Rank; i++)
-            {
-                outData.arrayLengths[i] = array.GetLength(i);
-            }
-            IntPtr* p = (IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(array);
-            outData.objPtr = (byte*)p;
-            p += 2;
-            outData.startItemOffcet = ((byte*)p);
-            outData.startItemOffcet += rank * 8;
-            return outData;
+            int arrayMsize = rank * 8 + allLength * this.elementTypeSize;
+
+            object array = new byte[arrayMsize];
+
+            IntPtr* p = (IntPtr*)GeneralTool.ObjectToVoidPtr(array);
+            *p = head;
+            ++p;
+            *p = (IntPtr)allLength; ++p;
+            GeneralTool.MemCpy(p, lengths, rank * 4);
+            return array;
         }
 
-        public override void GetArrayData(Array array, ref ArrayWrapOutData outData)
+        public override ArrayWrapData GetArrayData(Array array)
         {
-            outData.arrayLengths = new int[array.Rank];
-            for (int i = 0; i < array.Rank; i++)
-            {
-                outData.arrayLengths[i] = array.GetLength(i);
-            }
-            IntPtr* p = (IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(array);
-            outData.objPtr = (byte*)p;
+            ArrayWrapData arrayWrapData = new ArrayWrapData();
+            IntPtr* p = (IntPtr*)GeneralTool.ObjectToVoidPtr(array);
             p += 2;
-            outData.startItemOffcet = ((byte*)p);
-            outData.startItemOffcet += rank * 8;
+            int* lengthP = (int*)p;
+
+            arrayWrapData.arrayLengths = new int[rank];
+            for (int i = 0; i < rank; i++)
+            {
+                arrayWrapData.arrayLengths[i] = lengthP[i];
+            }
+
+            arrayWrapData.startItemOffcet = 2 * UnsafeOperation.PTR_COUNT + rank * 8;
+            return arrayWrapData;
         }
 
     }
@@ -299,41 +297,41 @@ namespace PtrReflection
     unsafe class ArrayWrapRankOne : IArrayWrap
     {
         public ArrayWrapRankOne(int rank, Type elementType) : base(rank, elementType) { }
-        public override object CreateArray(ref ArrayWrapInputData arrayWrapData)
+        public override object CreateArray(ref ArrayWrapData arrayWrapData)
         {
             int arrayMsize = arrayWrapData.length * this.elementTypeSize;
             object array = new byte[arrayMsize];
-            IntPtr* p = (IntPtr*)UnsafeTool.unsafeTool.objectToVoidPtr(array);
-            arrayWrapData.objPtr = (byte*)p;
+            IntPtr* p = (IntPtr*)GeneralTool.ObjectToVoidPtr(array);
             *p = head;
             ++p;
             *p = (IntPtr)arrayWrapData.length; ++p;
-            //*p = type.TypeHandle.Value; ++p;
-            arrayWrapData.startItemOffcet = (byte*)p;
+            arrayWrapData.startItemOffcet = 2 * UnsafeOperation.PTR_COUNT;
             return array;
         }
-        public override ArrayWrapOutData GetArrayData(Array array)
-        {
-            ArrayWrapOutData outData = new ArrayWrapOutData();
-            outData.length = array.Length;
-            //ulong gcHandle;
-            outData.objPtr = GeneralTool.ObjectToVoidPtr(array);
-            IntPtr* p = (IntPtr*)outData.objPtr;
-            p += 2;
-            outData.startItemOffcet = (byte*)p;
 
-            return outData;
+        public override object CreateArray()
+        {
+            int arrayMsize = allLength * this.elementTypeSize;
+            object array = new byte[arrayMsize];
+            IntPtr* p = (IntPtr*)GeneralTool.ObjectToVoidPtr(array);
+            *p = head;
+            ++p;
+            *p = (IntPtr)allLength; ++p;
+            return array;
         }
 
-        public override void GetArrayData(Array array, ref ArrayWrapOutData outData)
+        public override ArrayWrapData GetArrayData(Array array)
         {
-            outData.length = array.Length;
-            outData.objPtr = GeneralTool.ObjectToVoidPtr(array);
-            IntPtr* p = (IntPtr*)outData.objPtr;
-            p += 2;
-            outData.startItemOffcet = (byte*)p;
+            return new ArrayWrapData
+            {
+                length = array.Length,
+                startItemOffcet = 2 * UnsafeOperation.PTR_COUNT
+            };
+
         }
 
     }
 
+
 }
+
