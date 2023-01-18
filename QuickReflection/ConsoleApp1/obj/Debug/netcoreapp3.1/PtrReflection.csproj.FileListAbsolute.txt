@@ -12,3 +12,17 @@ F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Deb
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.dll
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.pdb
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.genruntimeconfig.cache
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\PtrReflection.exe
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\PtrReflection.deps.json
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\PtrReflection.runtimeconfig.json
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\PtrReflection.runtimeconfig.dev.json
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\PtrReflection.dll
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\PtrReflection.pdb
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\bin\Debug\netcoreapp3.1\DynamicCustomReflection.dll
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.csproj.AssemblyReference.cache
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.GeneratedMSBuildEditorConfig.editorconfig
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.csproj.CoreCompileInputs.cache
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.csproj.CopyComplete
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.dll
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.pdb
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\netcoreapp3.1\PtrReflection.genruntimeconfig.cache

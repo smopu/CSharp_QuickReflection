@@ -10,3 +10,5 @@ F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Deb
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\PtrReflection.csproj.CopyComplete
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\PtrReflection.exe
 F:\a\ReflectionTest\q\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\PtrReflection.pdb
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\PtrReflection.exe
+C:\GitHub\CSharp_QuickReflection\QuickReflection\ConsoleApp1\obj\Debug\net45\PtrReflection.pdb

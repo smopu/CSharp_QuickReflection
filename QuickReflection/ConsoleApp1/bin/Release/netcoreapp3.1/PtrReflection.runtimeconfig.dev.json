@@ -1,9 +1,9 @@
 {
   "runtimeOptions": {
     "additionalProbingPaths": [
-      "C:\\Users\\smopu!M\\.dotnet\\store\\|arch|\\|tfm|",
-      "C:\\Users\\smopu!M\\.nuget\\packages",
-      "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+      "C:\\Users\\Strawberry Boom\\.dotnet\\store\\|arch|\\|tfm|",
+      "C:\\Users\\Strawberry Boom\\.nuget\\packages",
+      "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
     ]
   }
 }

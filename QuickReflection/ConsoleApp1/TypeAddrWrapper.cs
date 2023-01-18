@@ -7,6 +7,7 @@ using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
+using StringTableDll;
 
 namespace PtrReflection
 {
@@ -229,12 +230,20 @@ namespace PtrReflection
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public TypeAddrFieldAndProperty Find(char* d, int length)
         {
-            int id = stringTable.Find(d, length);
-            if (id < 0)
+            //int id = stringTable.Find(d, length);
+
+            var stringTableLive = stringTable.lives[length];
+            if (stringTableLive == null)
             {
                 return null;
             }
-            return allTypeField[id];
+            return allTypeField[stringTableLive.Run(d)];
+
+            //if (id < 0)
+            //{
+            //    return null;
+            //}
+            //return allTypeField[id];
         }
 
         /// <summary>

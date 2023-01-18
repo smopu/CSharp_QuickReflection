@@ -18,6 +18,7 @@ public class TestScript
     void DebugLog(object obj)
     {
         Console.WriteLine(Convert.ToString(obj));
+        GC.Collect();
     }
 
 
@@ -105,8 +106,6 @@ public class TestScript
 
         DebugLog(" ");
         DebugLog("====↓↓↓↓ 属性 ↓↓↓↓===== ");
-        DebugLog(" ");
-
         instens.Str = "S3ED";
         instens.One = 1;
         instens.Point = new Vector3(3, -4.5f, 97.4f);
@@ -657,7 +656,7 @@ public class TestScript
         Vector3 point = new Vector3(99.2f, -98.2f, 3.2f);
         DebugLog("");
         DebugLog("循环" + testCount + "次");
-        DebugLog("====================================");
+        
         DebugLog("");
 
         var fieldName_str = nameof(MyClass.str);
@@ -689,16 +688,86 @@ public class TestScript
             var addr3 = warp.Find(_point, fieldName_pointLength);
 
             DebugLog("");
-            DebugLog("====================================");
+            
             DebugLog("");
+
+
+            DebugLog("");
+            DebugLog("=========↓↓↓FieldInfo↓↓↓=============");
+            DebugLog("Set:");
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                typeof(MyClass).GetField(fieldName_str).SetValue(myClass, v1);
+                typeof(MyClass).GetField(fieldName_one).SetValue(myClass, v2);
+                typeof(MyClass).GetField(fieldName_point).SetValue(myClass, v3);
+            }
+            oTime.Stop();
+            DebugLog("原生反射 FieldInfo SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                warp.nameOfField[fieldName_str].SetValue(handleVoid, v1);
+                warp.nameOfField[fieldName_one].SetValue(handleVoid, v2);
+                warp.nameOfField[fieldName_point].SetValue(handleVoid, v3);
+            }
+            oTime.Stop();
+            DebugLog("指针方法 SetValue 使用object类型 string查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                warp.Find(_str, fieldName_strLength).SetValue(handleVoid, v1);
+                warp.Find(_one, fieldName_oneLength).SetValue(handleVoid, v2);
+                warp.Find(_point, fieldName_pointLength).SetValue(handleVoid, v3);
+            }
+            oTime.Stop();
+            DebugLog("指针方法 SetValue 使用object类型 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
 
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                v1 = (string)typeof(MyClass).GetField(nameof(MyClass.str)).GetValue(myClass);
-                v2 = (int)typeof(MyClass).GetField(nameof(MyClass.one)).GetValue(myClass);
-                v3 = (Vector3)typeof(MyClass).GetField(nameof(MyClass.point)).GetValue(myClass);
+                GeneralTool.SetObject(*handleByte + warp.Find(_str, fieldName_strLength).offset, v1);
+                *(int*)(*handleByte + warp.Find(_one, fieldName_oneLength).offset) = v2;
+                warp.Find(_point, fieldName_pointLength).WriteStruct<Vector3>(handleVoid, v3);
+            }
+            oTime.Stop();
+            DebugLog("指针方法 SetValue 确定类型的 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                GeneralTool.SetObject(*handleByte + addr1.offset, v1);
+                *(int*)(*handleByte + addr2.offset) = v2;
+                addr3.WriteStruct<Vector3>(handleVoid, v3);
+            }
+            oTime.Stop();
+            DebugLog("指针方法 SetValue 忽略字符串查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                myClass.str = v1;
+                myClass.one = v2;
+                myClass.point = v3;
+            }
+            oTime.Stop();
+            DebugLog("原生 SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+
+            DebugLog("");
+            
+            DebugLog("Get:");
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                v1 = (string)typeof(MyClass).GetField(fieldName_str).GetValue(myClass);
+                v2 = (int)typeof(MyClass).GetField(fieldName_one).GetValue(myClass);
+                v3 = (Vector3)typeof(MyClass).GetField(fieldName_point).GetValue(myClass);
             }
             oTime.Stop();
             DebugLog("原生反射 FieldInfo GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
@@ -706,9 +775,9 @@ public class TestScript
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                v1 = (string)warp.nameOfField[nameof(MyClass.str)].GetValue(handleVoid);
-                v2 = (int)warp.nameOfField[nameof(MyClass.one)].GetValue(handleVoid);
-                v3 = (Vector3)warp.nameOfField[nameof(MyClass.point)].GetValue(handleVoid);
+                v1 = (string)warp.nameOfField[fieldName_str].GetValue(handleVoid);
+                v2 = (int)warp.nameOfField[fieldName_one].GetValue(handleVoid);
+                v3 = (Vector3)warp.nameOfField[fieldName_point].GetValue(handleVoid);
             }
             oTime.Stop();
             DebugLog("指针方法 GetValue 使用object类型 string查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
@@ -729,18 +798,18 @@ public class TestScript
             for (int i = 0; i < testCount; i++)
             {
                 v1 = (string)GeneralTool.VoidPtrToObject(*(void**)(*handleByte + warp.Find(_str, fieldName_strLength).offset));
-                v2 = *(int*)(handleVoid + warp.Find(_one, fieldName_oneLength).offset);
+                v2 = *(int*)(*handleByte + warp.Find(_one, fieldName_oneLength).offset);
                 v3 = warp.Find(_point, fieldName_pointLength).ReadStruct<Vector3>(handleVoid);
             }
             oTime.Stop();
-            DebugLog("指针方法 GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 GetValue 确定类型的 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
                 v1 = (string)GeneralTool.VoidPtrToObject(*(void**)(*handleByte + addr1.offset));
-                v2 = *(int*)(handleVoid + addr2.offset);
+                v2 = *(int*)(*handleByte + addr2.offset);
                 v3 = addr3.ReadStruct<Vector3>(handleVoid);
             }
             oTime.Stop();
@@ -756,13 +825,13 @@ public class TestScript
                 v3 = myClass.point;
             }
             oTime.Stop();
-            DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生 GetValue ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
 
             DebugLog("");
             DebugLog("=========↓↓↓Property↓↓↓=============");
-            DebugLog("");
+            DebugLog("Set:");
 
             addr1 = warp.Find(_Str, fieldName_StrLength);
             addr2 = warp.Find(_One, fieldName_OneLength);
@@ -770,12 +839,24 @@ public class TestScript
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                typeof(MyClass).GetProperty(nameof(MyClass.Str)).SetValue(myClass, str);
-                typeof(MyClass).GetProperty(nameof(MyClass.One)).SetValue(myClass, 18);
-                typeof(MyClass).GetProperty(nameof(MyClass.Point)).SetValue(myClass, point);
+                typeof(MyClass).GetProperty(fieldName_Str).SetValue(myClass, str);
+                typeof(MyClass).GetProperty(fieldName_One).SetValue(myClass, 18);
+                typeof(MyClass).GetProperty(fieldName_Point).SetValue(myClass, point);
             }
             oTime.Stop();
             DebugLog("原生反射 PropertyInfo SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                warp.nameOfField[fieldName_Str].SetValue(handleVoid, str);
+                warp.nameOfField[fieldName_One].SetValue(handleVoid, 18);
+                warp.nameOfField[fieldName_Point].SetValue(handleVoid, point);
+            }
+
+            oTime.Stop();
+            DebugLog("指针方法 SetValue 使用object类型 string查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -786,7 +867,7 @@ public class TestScript
             }
 
             oTime.Stop();
-            DebugLog("指针方法 SetValue 使用object类型：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 SetValue 使用object类型 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -796,7 +877,7 @@ public class TestScript
                 warp.Find(_Point, fieldName_PointLength).propertyDelegateItem.setObject(*handleVoid, point);
             }
             oTime.Stop();
-            DebugLog("指针方法 SetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 SetValue 确定类型的 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -816,23 +897,34 @@ public class TestScript
                 v3 = myClass.Point;
             }
             oTime.Stop();
-            DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生 SetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
 
             DebugLog("");
-            DebugLog("====================================");
-            DebugLog("");
+            
+            DebugLog("Get:");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                v1 = (string)typeof(MyClass).GetProperty(nameof(MyClass.Str)).GetValue(myClass);
-                v2 = (int)typeof(MyClass).GetProperty(nameof(MyClass.One)).GetValue(myClass);
-                v3 = (Vector3)typeof(MyClass).GetProperty(nameof(MyClass.Point)).GetValue(myClass);
+                v1 = (string)typeof(MyClass).GetProperty(fieldName_Str).GetValue(myClass);
+                v2 = (int)typeof(MyClass).GetProperty(fieldName_One).GetValue(myClass);
+                v3 = (Vector3)typeof(MyClass).GetProperty(fieldName_Point).GetValue(myClass);
             }
             oTime.Stop();
             DebugLog("原生反射 PropertyInfo GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+
+            oTime.Reset(); oTime.Start();
+            for (int i = 0; i < testCount; i++)
+            {
+                v1 = (string)warp.nameOfField[fieldName_Str].GetValue(handleVoid);
+                v2 = (int)warp.nameOfField[fieldName_One].GetValue(handleVoid);
+                v3 = (Vector3)warp.nameOfField[fieldName_Point].GetValue(handleVoid);
+            }
+
+            oTime.Stop();
+            DebugLog("指针方法 GetValue 使用object类型 string查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -842,7 +934,7 @@ public class TestScript
                 v3 = (Vector3)warp.Find(_Point, fieldName_PointLength).GetValue(handleVoid);
             }
             oTime.Stop();
-            DebugLog("指针方法 GetValue 使用object类型 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 GetValue 使用object类型 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -852,7 +944,7 @@ public class TestScript
                 v3 = (Vector3)warp.Find(_Point, fieldName_PointLength).propertyDelegateItem.getObject(handleVoid);
             }
             oTime.Stop();
-            DebugLog("指针方法 GetValue 确定类型的：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 GetValue 确定类型的 char*查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -867,17 +959,17 @@ public class TestScript
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
-                myClass.Str = str;
-                myClass.One = 18;
-                myClass.Point = point;
+                v1 = myClass.Str;
+                v2 = myClass.One;
+                v3 = myClass.Point;
             }
             oTime.Stop();
-            DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("原生 GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             DebugLog("");
             DebugLog("=========↓↓↓Array↓↓↓=========");
-            DebugLog("");
+            DebugLog("Get:");
             v1s = new string[] { "Ac", "S@D", "CS@", "CS2ss", "CXaa" };
             v2s = new int[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
             v3s = new Vector3[] { new Vector3(1, 2, 3), new Vector3(11, -2, 41.3f), new Vector3(19.999f, 9, 0), new Vector3(123.454f, 647.4f, 11) };
@@ -915,9 +1007,6 @@ public class TestScript
             oTime.Stop();
             DebugLog("原生反射 Array GetValue：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
-
-
-
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
@@ -944,16 +1033,16 @@ public class TestScript
             for (int i = 0; i < testCount; i++)
             {
                 ArrayWrapData data1 = arrayWrapV1.GetArrayData(v1s);
+                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
+                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 for (int j = 0; j < data1.length; j++)
                 {
                     v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * j));
                 }
-                ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2s);
                 for (int j = 0; j < data2.length; j++)
                 {
                     v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * j);
                 }
-                ArrayWrapData data3 = arrayWrapV3.GetArrayData(v3s);
                 for (int j = 0; j < data3.length; j++)
                 {
                     v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j);
@@ -982,9 +1071,9 @@ public class TestScript
                         v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j);
                     }
                 }
+                oTime.Stop();
             }
-            oTime.Stop();
-            DebugLog("指针方法 ArrayWrapManager GetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager GetValue 确定类型的 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
@@ -1007,6 +1096,9 @@ public class TestScript
             DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
+            DebugLog("");
+            
+            DebugLog("Set:");
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
@@ -1100,9 +1192,9 @@ public class TestScript
                         GeneralTool.MemCpy(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * j, GeneralTool.AsPointer(ref v), arrayWrapV3.elementTypeSize);
                     }
                 }
+                oTime.Stop();
             }
-            oTime.Stop();
-            DebugLog("指针方法 ArrayWrapManager SetValue 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
+            DebugLog("指针方法 ArrayWrapManager SetValue 确定类型的 忽略Data查询：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
 
             oTime.Reset(); oTime.Start();
@@ -1134,7 +1226,7 @@ public class TestScript
 
             DebugLog("");
             DebugLog("=============↓↓↓Multidimensional Array↓↓↓===============");
-            DebugLog("");
+            DebugLog("Get:");
             v1ss = new string[2, 4] {
                 { "ass", "#$%^&", "*SAHASww&()", "兀驦屮鲵傌" },
                 { "adsadad", "⑤驦屮尼傌", "fun(a*(b+c))", "FSD手动阀手动阀" },
@@ -1342,6 +1434,8 @@ public class TestScript
             oTime.Stop();
             DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
+            DebugLog("");
+            DebugLog("Set:");
 
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
@@ -1527,8 +1621,6 @@ public class TestScript
 
             DebugLog("");
             DebugLog("=============↓↓↓CreateInstance↓↓↓===============");
-            DebugLog("");
-
             oTime.Reset(); oTime.Start();
             for (int i = 0; i < testCount; i++)
             {
@@ -1587,7 +1679,7 @@ public class TestScript
                 oTime.Stop();
             }
             DebugLog("指针方法 创建数组：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
+            
             {
                 oTime.Reset(); oTime.Start();
                 for (int i = 0; i < testCount; i++)
