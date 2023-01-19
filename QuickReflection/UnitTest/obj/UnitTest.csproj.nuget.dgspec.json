@@ -1,25 +1,24 @@
 {
   "format": 1,
   "restore": {
-    "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj": {}
+    "D:\\g\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj": {}
   },
   "projects": {
-    "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj": {
+    "D:\\g\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj",
+        "projectUniqueName": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj",
         "projectName": "PtrReflection",
-        "projectPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj",
-        "packagesPath": "C:\\Users\\Strawberry Boom\\.nuget\\packages\\",
-        "outputPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\obj\\",
+        "projectPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj",
+        "packagesPath": "C:\\Users\\smopu!M\\.nuget\\packages\\",
+        "outputPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\obj\\",
         "projectStyle": "PackageReference",
         "crossTargeting": true,
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Strawberry Boom\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\smopu!M\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -56,8 +55,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -66,25 +64,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj": {
+    "D:\\g\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj",
+        "projectUniqueName": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj",
         "projectName": "UnitTest",
-        "projectPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj",
-        "packagesPath": "C:\\Users\\Strawberry Boom\\.nuget\\packages\\",
-        "outputPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\obj\\",
+        "projectPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\UnitTest.csproj",
+        "packagesPath": "C:\\Users\\smopu!M\\.nuget\\packages\\",
+        "outputPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\UnitTest\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
         ],
         "configFilePaths": [
-          "C:\\Users\\Strawberry Boom\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\smopu!M\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -98,8 +95,8 @@
           "net6.0": {
             "targetAlias": "net6.0",
             "projectReferences": {
-              "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj": {
-                "projectPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj"
+              "D:\\g\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj": {
+                "projectPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\ConsoleApp1\\PtrReflection.csproj"
               }
             }
           }
@@ -137,8 +134,7 @@
             "net47",
             "net471",
             "net472",
-            "net48",
-            "net481"
+            "net48"
           ],
           "assetTargetFallback": true,
           "warn": true,
@@ -147,7 +143,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
         }
       }
     }

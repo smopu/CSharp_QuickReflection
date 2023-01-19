@@ -977,12 +977,21 @@ public class TestScript
             var arrayWrapV2 = ArrayWrapManager.GetIArrayWrap(typeof(int[]));
             var arrayWrapV3 = ArrayWrapManager.GetIArrayWrap(typeof(Vector3[]));
 
-            var d = __makeref(v1s);
-            byte** v1sP = *(byte***)(&d);
-            d = __makeref(v2s);
-            byte** v2sP = *(byte***)(&d);
-            d = __makeref(v3s);
-            byte** v3sP = *(byte***)(&d);
+            ObjReference v1sVar = new ObjReference(v1s);
+            byte** v1sP = (byte**)GeneralTool.AsPointer<ObjReference>(ref v1sVar);
+
+            ObjReference v2sVar = new ObjReference(v2s);
+            byte** v2sP = (byte**)GeneralTool.AsPointer<ObjReference>(ref v2sVar);
+
+            ObjReference v3sVar = new ObjReference(v3s);
+            byte** v3sP = (byte**)GeneralTool.AsPointer<ObjReference>(ref v3sVar);
+
+            //var d = __makeref(v1s);
+            //byte** v1sP = *(byte***)(&d);
+            //d = __makeref(v2s);
+            //byte** v2sP = *(byte***)(&d);
+            //d = __makeref(v3s);
+            //byte** v3sP = *(byte***)(&d);
 
 
             oTime.Reset(); oTime.Start();
@@ -1216,12 +1225,13 @@ public class TestScript
             oTime.Stop();
             DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
 
-            d = __makeref(v1ss);
-            v1sP = *(byte***)(&d);
-            d = __makeref(v2ss);
-            v2sP = *(byte***)(&d);
-            d = __makeref(v3ss);
-            v3sP = *(byte***)(&d);
+            //d = __makeref(v1ss);
+            //v1sP = *(byte***)(&d);
+            //d = __makeref(v2ss);
+            //v2sP = *(byte***)(&d);
+            //d = __makeref(v3ss);
+            //v3sP = *(byte***)(&d);
+
 
 
             DebugLog("");
@@ -1254,6 +1264,15 @@ public class TestScript
                    new Vector3(1234, -982.3f, -299)
                 },
             };
+            ObjReference v1ssVar = new ObjReference(v1ss);
+            byte** v1ssP = (byte**)GeneralTool.AsPointer<ObjReference>(ref v1ssVar);
+
+            ObjReference v2ssVar = new ObjReference(v2ss);
+            byte** v2ssP = (byte**)GeneralTool.AsPointer<ObjReference>(ref v2ssVar);
+
+            ObjReference v3ssVar = new ObjReference(v3ss);
+            byte** v3ssP = (byte**)GeneralTool.AsPointer<ObjReference>(ref v3ssVar);
+
             arrayWrapV1 = ArrayWrapManager.GetIArrayWrap(v1ss.GetType());
             arrayWrapV2 = ArrayWrapManager.GetIArrayWrap(v2ss.GetType());
             arrayWrapV3 = ArrayWrapManager.GetIArrayWrap(v3ss.GetType());
@@ -1305,7 +1324,7 @@ public class TestScript
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
                         //v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
-                        v1 = (string)arrayWrapV1.GetValue(*v1sP + data1.startItemOffcet, x * data1.arrayLengths[1] + y);
+                        v1 = (string)arrayWrapV1.GetValue(*v1ssP + data1.startItemOffcet, x * data1.arrayLengths[1] + y);
                     }
                 }
                 ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
@@ -1315,7 +1334,7 @@ public class TestScript
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            v2 = (int)arrayWrapV2.GetValue(*v2sP + data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
+                            v2 = (int)arrayWrapV2.GetValue(*v2ssP + data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
                         }
                     }
                 }
@@ -1324,7 +1343,7 @@ public class TestScript
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                        v3 = (Vector3)arrayWrapV3.GetValue(*v3sP + data3.startItemOffcet, x * data3.arrayLengths[1] + y);
+                        v3 = (Vector3)arrayWrapV3.GetValue(*v3ssP + data3.startItemOffcet, x * data3.arrayLengths[1] + y);
                     }
                 }
             }
@@ -1339,7 +1358,7 @@ public class TestScript
                 {
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
-                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
+                        v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1ssP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
                     }
                 }
 
@@ -1350,7 +1369,7 @@ public class TestScript
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
+                            v2 = *(int*)(*v2ssP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
                         }
                     }
                 }
@@ -1360,7 +1379,7 @@ public class TestScript
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                        v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
+                        v3 = *(Vector3*)(*v3ssP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
                     }
                 }
             }
@@ -1378,7 +1397,7 @@ public class TestScript
                     {
                         for (int y = 0; y < data1.arrayLengths[1]; y++)
                         {
-                            v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
+                            v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(*v1ssP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
                         }
                     }
                     for (int x = 0; x < data2.arrayLengths[0]; x++)
@@ -1387,7 +1406,7 @@ public class TestScript
                         {
                             for (int z = 0; z < data2.arrayLengths[2]; z++)
                             {
-                                v2 = *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
+                                v2 = *(int*)(*v2ssP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z));
                             }
                         }
                     }
@@ -1395,7 +1414,7 @@ public class TestScript
                     {
                         for (int y = 0; y < data3.arrayLengths[1]; y++)
                         {
-                            v3 = *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
+                            v3 = *(Vector3*)(*v3ssP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y));
                         }
                     }
                 }
@@ -1482,7 +1501,7 @@ public class TestScript
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
                         //v1 = (string)GeneralTool.VoidPtrToObject(*(IntPtr**)(data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)));
-                        arrayWrapV1.SetValue(*v1sP + data1.startItemOffcet, x * data1.arrayLengths[1] + y, v1);
+                        arrayWrapV1.SetValue(*v1ssP + data1.startItemOffcet, x * data1.arrayLengths[1] + y, v1);
                     }
                 }
                 ArrayWrapData data2 = arrayWrapV2.GetArrayData(v2ss);
@@ -1492,7 +1511,7 @@ public class TestScript
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            arrayWrapV2.SetValue(*v2sP + data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z), v2);
+                            arrayWrapV2.SetValue(*v2ssP + data2.startItemOffcet, (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z), v2);
                         }
                     }
                 }
@@ -1501,7 +1520,7 @@ public class TestScript
                 {
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
-                        arrayWrapV3.SetValue(*v3sP + data3.startItemOffcet, x * data3.arrayLengths[1] + y, v3);
+                        arrayWrapV3.SetValue(*v3ssP + data3.startItemOffcet, x * data3.arrayLengths[1] + y, v3);
                     }
                 }
             }
@@ -1517,7 +1536,7 @@ public class TestScript
                     for (int y = 0; y < data1.arrayLengths[1]; y++)
                     {
                         GeneralTool.SetObject(
-                            (*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)),
+                            (*v1ssP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y)),
                             v1);
                     }
                 }
@@ -1529,7 +1548,7 @@ public class TestScript
                     {
                         for (int z = 0; z < data2.arrayLengths[2]; z++)
                         {
-                            *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z))
+                            *(int*)(*v2ssP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z))
                                 = v2;
                         }
                     }
@@ -1541,7 +1560,7 @@ public class TestScript
                     for (int y = 0; y < data3.arrayLengths[1]; y++)
                     {
                         // GeneralTool.MemCpy((data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)), GeneralTool.AsPointer(ref v3), arrayWrapV3.elementTypeSize);
-                        *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
+                        *(Vector3*)(*v3ssP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
                     }
                 }
 
@@ -1561,7 +1580,7 @@ public class TestScript
                     {
                         for (int y = 0; y < data1.arrayLengths[1]; y++)
                         {
-                            GeneralTool.SetObject(*v1sP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y), v1);
+                            GeneralTool.SetObject(*v1ssP + data1.startItemOffcet + arrayWrapV1.elementTypeSize * (x * data1.arrayLengths[1] + y), v1);
                         }
                     }
                     for (int x = 0; x < data2.arrayLengths[0]; x++)
@@ -1570,7 +1589,7 @@ public class TestScript
                         {
                             for (int z = 0; z < data2.arrayLengths[2]; z++)
                             {
-                                *(int*)(*v2sP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z)) = v2;
+                                *(int*)(*v2ssP + data2.startItemOffcet + arrayWrapV2.elementTypeSize * (x * data2.arrayLengths[1] * data2.arrayLengths[2] + y * data2.arrayLengths[2] + z)) = v2;
                             }
                         }
                     }
@@ -1578,7 +1597,7 @@ public class TestScript
                     {
                         for (int y = 0; y < data3.arrayLengths[1]; y++)
                         {
-                            *(Vector3*)(*v3sP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
+                            *(Vector3*)(*v3ssP + data3.startItemOffcet + arrayWrapV3.elementTypeSize * (x * data3.arrayLengths[1] + y)) = v3;
                         }
                     }
                 }
@@ -1616,7 +1635,6 @@ public class TestScript
             }
             oTime.Stop();
             DebugLog("原生 ：" + oTime.Elapsed.TotalMilliseconds + " 毫秒");
-
 
 
             DebugLog("");

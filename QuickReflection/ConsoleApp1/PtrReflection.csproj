@@ -18,9 +18,6 @@
     <Reference Include="DynamicCustomReflection">
       <HintPath>..\DynamicCustomReflection.dll</HintPath>
     </Reference>
-    <Reference Include="StringTableDll">
-      <HintPath>..\StringTableDll\bin\Release\net6.0\StringTableDll.dll</HintPath>
-    </Reference>
   </ItemGroup>
 
 </Project>

@@ -8,24 +8,23 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\Strawberry Boom\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\smopu!M\\.nuget\\packages\\": {},
+    "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\StringTableDll\\StringTableDll.csproj",
+      "projectUniqueName": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\StringTableDll\\StringTableDll.csproj",
       "projectName": "StringTableDll",
-      "projectPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\StringTableDll\\StringTableDll.csproj",
-      "packagesPath": "C:\\Users\\Strawberry Boom\\.nuget\\packages\\",
-      "outputPath": "C:\\GitHub\\CSharp_QuickReflection\\QuickReflection\\StringTableDll\\obj\\",
+      "projectPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\StringTableDll\\StringTableDll.csproj",
+      "packagesPath": "C:\\Users\\smopu!M\\.nuget\\packages\\",
+      "outputPath": "D:\\g\\CSharp_QuickReflection\\QuickReflection\\StringTableDll\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
       ],
       "configFilePaths": [
-        "C:\\Users\\Strawberry Boom\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+        "C:\\Users\\smopu!M\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -56,8 +55,7 @@
           "net47",
           "net471",
           "net472",
-          "net48",
-          "net481"
+          "net48"
         ],
         "assetTargetFallback": true,
         "warn": true,
@@ -66,7 +64,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\7.0.102\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
       }
     }
   }

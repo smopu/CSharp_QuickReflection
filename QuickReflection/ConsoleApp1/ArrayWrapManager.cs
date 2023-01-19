@@ -55,6 +55,7 @@ namespace PtrReflection
         public readonly IntPtr head;
         public readonly int rank;
         public readonly int elementTypeSize;
+        public readonly int elementHeapSize;
         public readonly Type elementType;
         public readonly bool isValueType;
         public IntPtr typeHead;
@@ -68,6 +69,7 @@ namespace PtrReflection
             if (isValueType)
             {
                 this.elementTypeSize = UnsafeOperation.SizeOfStack(elementType);
+                this.elementHeapSize = UnsafeOperation.SizeOfHeap(elementType);
             }
             else
             {
@@ -136,7 +138,18 @@ namespace PtrReflection
                         //GC.Collect(); 
                         //return null;  
                         //ulong gcHandle;
-                        object obj = new byte[this.elementTypeSize - 1 * UnsafeOperation.PTR_COUNT];
+                        //object obj = new byte[this.elementTypeSize - 1 * UnsafeOperation.PTR_COUNT];
+                        object obj = new byte[this.elementHeapSize - 3 * UnsafeOperation.PTR_COUNT];
+
+                        //long* ptr33 = (long*)GeneralTool.ObjectToVoidPtr(obj);
+                        //object vv = new Vector3(9, 9, 9);
+                        //List<long> ass = new List<long>();
+                        //for (int i = 0; i < 20; i++)
+                        //{
+                        //    ass.Add(ptr33[i]);
+                        //}
+
+
                         IntPtr* ptr = (IntPtr*)GeneralTool.ObjectToVoidPtr(obj);
                         if (typeHead == default(IntPtr))
                         {

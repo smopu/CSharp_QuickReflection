@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using StringTableDll;
 
+
 namespace PtrReflection
 {
     public unsafe class TypeAddrReflectionWrapper
