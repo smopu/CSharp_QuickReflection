@@ -1,0 +1,9 @@
+D:\GameDownload\QuickReflection\PtrReflection\bin\Release\PtrReflection.exe.config
+D:\GameDownload\QuickReflection\PtrReflection\obj\Release\PtrReflection.csprojResolveAssemblyReference.cache
+D:\GameDownload\QuickReflection\PtrReflection\bin\Release\PtrReflection.exe
+D:\GameDownload\QuickReflection\PtrReflection\bin\Release\PtrReflection.pdb
+D:\GameDownload\QuickReflection\PtrReflection\bin\Release\DynamicCustomReflection.dll
+D:\GameDownload\QuickReflection\PtrReflection\bin\Release\UnsafeDll.dll
+D:\GameDownload\QuickReflection\PtrReflection\bin\Release\UnsafeDll.pdb
+D:\GameDownload\QuickReflection\PtrReflection\obj\Release\PtrReflection.exe
+D:\GameDownload\QuickReflection\PtrReflection\obj\Release\PtrReflection.pdb

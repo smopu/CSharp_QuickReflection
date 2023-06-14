@@ -1,0 +1,124 @@
+{
+  "format": 1,
+  "restore": {
+    "D:\\a\\QuickReflection\\TestProject\\TestProject.csproj": {}
+  },
+  "projects": {
+    "D:\\a\\QuickReflection\\PtrReflection\\PtrReflection.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\a\\QuickReflection\\PtrReflection\\PtrReflection.csproj",
+        "projectName": "PtrReflection",
+        "projectPath": "D:\\a\\QuickReflection\\PtrReflection\\PtrReflection.csproj",
+        "frameworks": {
+          "net45": {
+            "projectReferences": {
+              "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj": {
+                "projectPath": "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net45": {}
+      }
+    },
+    "D:\\a\\QuickReflection\\TestProject\\TestProject.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "D:\\a\\QuickReflection\\TestProject\\TestProject.csproj",
+        "projectName": "TestProject",
+        "projectPath": "D:\\a\\QuickReflection\\TestProject\\TestProject.csproj",
+        "packagesPath": "C:\\Users\\smopu!M\\.nuget\\packages\\",
+        "outputPath": "D:\\a\\QuickReflection\\TestProject\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\smopu!M\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net6.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net6.0": {
+            "targetAlias": "net6.0",
+            "projectReferences": {
+              "D:\\a\\QuickReflection\\PtrReflection\\PtrReflection.csproj": {
+                "projectPath": "D:\\a\\QuickReflection\\PtrReflection\\PtrReflection.csproj"
+              },
+              "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj": {
+                "projectPath": "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net6.0": {
+          "targetAlias": "net6.0",
+          "dependencies": {
+            "Microsoft.NET.Test.Sdk": {
+              "target": "Package",
+              "version": "[16.11.0, )"
+            },
+            "NUnit": {
+              "target": "Package",
+              "version": "[3.13.2, )"
+            },
+            "NUnit3TestAdapter": {
+              "target": "Package",
+              "version": "[4.0.0, )"
+            },
+            "coverlet.collector": {
+              "target": "Package",
+              "version": "[3.1.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\6.0.201\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj": {
+      "restore": {
+        "projectUniqueName": "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj",
+        "projectName": "UnsafeApplication",
+        "projectPath": "D:\\a\\QuickReflection\\UnsafeApplication\\UnsafeApplication.csproj",
+        "frameworks": {
+          "net45": {
+            "projectReferences": {}
+          }
+        }
+      },
+      "frameworks": {
+        "net45": {}
+      }
+    }
+  }
+}

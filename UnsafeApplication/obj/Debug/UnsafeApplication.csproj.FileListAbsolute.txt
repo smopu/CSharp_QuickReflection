@@ -1,0 +1,7 @@
+D:\a\QuickReflection\UnsafeApplication\bin\Debug\UnsafeApplication.dll.config
+D:\a\QuickReflection\UnsafeApplication\bin\Debug\UnsafeApplication.dll
+D:\a\QuickReflection\UnsafeApplication\bin\Debug\UnsafeApplication.pdb
+D:\a\QuickReflection\UnsafeApplication\obj\Debug\UnsafeApplication.csproj.AssemblyReference.cache
+D:\a\QuickReflection\UnsafeApplication\obj\Debug\UnsafeApplication.csproj.CoreCompileInputs.cache
+D:\a\QuickReflection\UnsafeApplication\obj\Debug\UnsafeApplication.dll
+D:\a\QuickReflection\UnsafeApplication\obj\Debug\UnsafeApplication.pdb
